@@ -11,7 +11,15 @@ class TextBox(VGroup):
         self.pt.move_to([self.sq.get_center()[0],-2,0])
         content.move_to(self.sq.get_center())
 
-    
+class link(Arrow):
+    def __init__(self, s, e):
+        super().__init__()
+        self.start = s
+        self.end = e
+        self.put_start_and_end_on(s.pt.get_center(), e.sq.get_center())
+        def update(mob):
+            mob.put_start_and_end_on(mob.start.pt.get_center(), mob.end.sq.get_center())
+        self.add_updater(update)
 
 
 class LinkedListNode(VGroup):
@@ -29,8 +37,9 @@ class LinkedListNode(VGroup):
             self.add(self.nextnode)
             center = self.box.get_x()
             self.nextnode.move_to([(center+3),-1,0])
-            arrow = Arrow()
-            arrow.put_start_and_end_on(self.box.pt.get_center(), self.nextnode.box.sq.get_center())
+            arrow = link(self.box,self.nextnode.box)
+            #arrow = Arrow()
+            #arrow.put_start_and_end_on(self.box.pt.get_center(), self.nextnode.box.sq.get_center())
             self.add(arrow)
             return (self.nextnode.box,arrow)
         else:
