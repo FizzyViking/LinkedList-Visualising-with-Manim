@@ -16,9 +16,9 @@ class link(Arrow):
         super().__init__()
         self.start = s
         self.end = e
-        self.put_start_and_end_on(s.pt.get_center(), e.sq.get_center())
         def update(mob):
-            mob.put_start_and_end_on(mob.start.pt.get_center(), mob.end.sq.get_center())
+            mob.put_start_and_end_on(mob.start.get_center(), mob.end.get_edge_center(LEFT))
+        update(self)
         self.add_updater(update)
 
 
@@ -37,7 +37,7 @@ class LinkedListNode(VGroup):
             self.add(self.nextnode)
             center = self.box.get_x()
             self.nextnode.move_to([(center+3),-1,0])
-            arrow = link(self.box,self.nextnode.box)
+            arrow = link(self.box.pt,self.nextnode.box.sq)
             #arrow = Arrow()
             #arrow.put_start_and_end_on(self.box.pt.get_center(), self.nextnode.box.sq.get_center())
             self.add(arrow)
@@ -51,7 +51,7 @@ class LinkedListNode(VGroup):
 
     def add_node(self, t):
         b,a = self.add_nodewithoutanim(t)
-        return (Create(b),Create(a))
+        return (b,Create(a))
     def getnode(self,index):
         if(index == 0):
             return self.box
@@ -66,8 +66,18 @@ class LinkedList(Scene):
         t = Text("hello!")
         my_mobject = LinkedListNode(t)
         self.play(Create(my_mobject))
+
+        boxy = TextBox(Text("a"))
+        boxy.move_to(my_mobject.get_center())
+        boxy.shift(RIGHT*3)
+        self.play(Create(boxy))
+
         anim = my_mobject.add_node(Text("a"))
-        self.play(anim[0],anim[1])
+        self.add(anim[0])
+        self.remove(boxy)
+        self.play(anim[1])
+        anim = my_mobject.add_node(Text("a"))
+        self.play(anim[1])
         my_mobject.add_nodewithoutanim(Text("b"))
         self.play(my_mobject.animate.shift(UP))
         mover = my_mobject.getnode(1)
