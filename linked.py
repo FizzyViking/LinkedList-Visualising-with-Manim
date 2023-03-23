@@ -31,7 +31,7 @@ class LinkedListNode(VGroup):
         #content.move_to(self.circle.get_center())
 
 
-    def add_nodewithoutanim(self, t):
+    def add_node(self, t):
         if self.nextnode == None:
             self.nextnode = LinkedListNode(t)
             self.add(self.nextnode)
@@ -41,17 +41,14 @@ class LinkedListNode(VGroup):
             #arrow = Arrow()
             #arrow.put_start_and_end_on(self.box.pt.get_center(), self.nextnode.box.sq.get_center())
             self.add(arrow)
-            return (self.nextnode.box,arrow)
+            return (self.nextnode.box,arrow,self.nextnode.get_x())
         else:
-            return self.nextnode.add_nodewithoutanim(t)
+            return self.nextnode.add_node(t)
 
 
 
 
 
-    def add_node(self, t):
-        b,a = self.add_nodewithoutanim(t)
-        return (b,Create(a))
     def getnode(self,index):
         if(index == 0):
             return self.box
@@ -66,20 +63,50 @@ class LinkedList(Scene):
         t = Text("hello!")
         my_mobject = LinkedListNode(t)
         self.play(Create(my_mobject))
-
+        
         boxy = TextBox(Text("a"))
         boxy.move_to(my_mobject.get_center())
-        boxy.shift(RIGHT*3)
-        self.play(Create(boxy))
-
+        boxy.shift(RIGHT*3+UP*10)
+        self.play(boxy.animate.shift(DOWN*10))
         anim = my_mobject.add_node(Text("a"))
         self.add(anim[0])
         self.remove(boxy)
-        self.play(anim[1])
-        anim = my_mobject.add_node(Text("a"))
-        self.play(anim[1])
-        my_mobject.add_nodewithoutanim(Text("b"))
-        self.play(my_mobject.animate.shift(UP))
-        mover = my_mobject.getnode(1)
-        self.play(mover.animate.shift(DOWN))
-        self.wait()
+        self.play(Create(anim[1]))
+
+class multiLink(Scene):
+    def construct(self):
+        t = Text("hello!")
+        mob = LinkedListNode(t)
+        self.play(Create(mob))
+        center = mob.get_center()
+
+        for x in range(4):
+            y = x+1
+            name = str(y)
+            boxy = TextBox(Text(name))
+            boxy.move_to(center)
+            boxy.shift(UP*10)
+            self.play(mob.animate(run_time=y/4).shift(LEFT*3*y))
+            self.play(boxy.animate.shift(DOWN*10))
+            anim = mob.add_node(Text(name))
+            self.add(anim[0])
+            self.remove(boxy)
+            self.play(Create(anim[1]))
+            self.play(mob.animate(run_time = 0.25).shift(RIGHT*3*y))
+            self.play(Wait(run_time=0.25))
+
+        for z in range(50):
+            name = str(z+y+1)
+            mob.add_node(Text(name))
+
+        y += 51
+        name = str(y)
+        boxy = TextBox(Text(name))
+        boxy.move_to(center)
+        boxy.shift(UP*10)
+        self.play(mob.animate(run_time=y/4).shift(LEFT*3*y))
+        self.play(boxy.animate.shift(DOWN*10))
+        anim = mob.add_node(Text(name))
+        self.add(anim[0])
+        self.remove(boxy)
+        self.play(Create(anim[1]))
