@@ -16,7 +16,11 @@ class link(Arrow):
         self.start = s
         self.end = e
         def update(mob):
-            mob.put_start_and_end_on(mob.start.get_center(), mob.end.get_edge_center(LEFT))
+            sx,sy,sz = mob.start.get_center()
+            ex,ey,sz = mob.end.get_center()
+            cutx,cuty,cutz = mob.end.get_edge_center(LEFT)
+            dy = (ey-sy)/(ex-sx)*(cutx-sx)
+            mob.put_start_and_end_on(mob.start.get_center(), (cutx,dy+sy,0))
         update(self)
         self.add_updater(update)
 
@@ -38,30 +42,13 @@ class LinkedListNode(VGroup):
         self.add(newnode)
         center = self.last.get_x()+3
         newnode.move_to([(center),-1,0])
-        arrow = Arrow()
-        arrow.put_start_and_end_on(self.last.box.pt.get_edge_center(RIGHT),newnode.box.sq.get_edge_center(LEFT))
+        #arrow = Arrow()
+        #arrow.put_start_and_end_on(self.last.box.pt.get_edge_center(RIGHT),newnode.box.sq.get_edge_center(LEFT))
+        arrow = link(self.last.box.pt,newnode.box)
         self.last = newnode
-            #arrow = Arrow()
-            #arrow.put_start_and_end_on(self.box.pt.get_center(), self.nextnode.box.sq.get_center())
+        
         self.add(arrow)
         return (self.last.box,arrow)
         
-    class FrontInserting(VGroup):
-        def __init__(self):
-            super().__init__()
-            self.first = None
-            self.last = None
-            self.count = 0
-        
 
-
-
-
-    def getnode(self,index):
-        if(index == 0):
-            return self.box
-        elif(self.nextnode == None):
-            return None
-        else:
-            return self.nextnode.getnode(index-1)
             

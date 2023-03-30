@@ -52,7 +52,7 @@ class multiLink(MovingCameraScene):
         boxy.move_to(center)
         boxy.shift(UP*10+RIGHT*3*y)
         #self.play(mob.animate(run_time=y/4).shift(LEFT*3*y))
-        self.play(self.camera.frame.animate(run_time=y/4).move_to((3*y,0,0)))
+        self.play(self.camera.frame.animate(run_time=y/10).move_to((3*y,0,0)))
         self.play(boxy.animate.shift(DOWN*10))
         anim = mob.add_node(Text(name))
         self.add(anim[0])
