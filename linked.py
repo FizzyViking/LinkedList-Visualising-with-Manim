@@ -16,6 +16,7 @@ class LinkedList(Scene):
         self.add(anim[0])
         self.remove(boxy)
         self.play(Create(anim[1]))
+        slash((0,0,0),(2,2,2),self)
 
 class multiLink(MovingCameraScene):
     def construct(self):
