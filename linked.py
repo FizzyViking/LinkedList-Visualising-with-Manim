@@ -12,9 +12,24 @@ class LinkedList(Scene):
         boxy.shift(RIGHT*4+UP*10)
         self.play(boxy.animate.shift(DOWN*10))
         anim = my_mobject.add_node("a")
-        self.add(anim[0])
+        self.add(anim)
         self.remove(boxy)
-        self.play(Create(anim[1]))
+        self.play(Create(my_mobject.start.arrow))
+
+class DLinkedList(Scene):
+    def construct(self):
+        my_mobject = LinkedListNode(DoubleLinked("Hello"))
+        self.play(Create(my_mobject))
+        
+        boxy = DoubleLinked("a")
+        boxy.move_to(my_mobject.get_center())
+        boxy.shift(RIGHT*4+UP*10)
+        self.play(boxy.animate.shift(DOWN*10))
+        anim = my_mobject.add_node("a")
+        self.add(anim)
+        self.remove(boxy)
+        self.play(Create(anim.backarrow),Create(anim.previous.arrow))
+
 
 class multiLink(MovingCameraScene):
     def construct(self):
@@ -28,6 +43,7 @@ class multiLink(MovingCameraScene):
         self.play(Create(mob))
         center = mob.get_center()
         cam = VGroup(self.camera.frame,sq,arrowname)
+        arr = mob.start
         for x in range(4):
             y = x+1
             name = str(y)
@@ -38,17 +54,18 @@ class multiLink(MovingCameraScene):
             self.play(cam.animate(run_time=y/4).move_to((4*y,0,0)))
             self.play(boxy.animate.shift(DOWN*10))
             anim = mob.add_node(name)
-            self.add(anim[0])
+            self.add(anim)
             self.remove(boxy)
-            self.play(Create(anim[1]))
+            self.play(Create(arr.arrow))
             #self.play(mob.animate(run_time = 0.25).shift(RIGHT*3*y))
             self.play(cam.animate(run_time = 0.25).move_to((0,0,0)))
             self.play(Wait(run_time=0.25))
+            arr = anim
 
         for z in range(50):
             name = str(z+y+1)
-            a,b = mob.add_node(name)
-            self.add(a,b)
+            a = mob.add_node(name)
+            self.add(a)
 
         y += 51
         name = str(y)
@@ -58,7 +75,8 @@ class multiLink(MovingCameraScene):
         #self.play(mob.animate(run_time=y/4).shift(LEFT*3*y))
         self.play(cam.animate(run_time=y/10).move_to((4*y,0,0)))
         self.play(boxy.animate.shift(DOWN*10))
+        last = mob.last
         anim = mob.add_node(name)
-        self.add(anim[0])
+        self.add(anim)
         self.remove(boxy)
-        self.play(Create(anim[1]))
+        self.play(Create(last.arrow))

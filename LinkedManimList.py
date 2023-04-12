@@ -28,6 +28,41 @@ class TextBox(VGroup):
         self.next_node = node
         self.arrow.connect(node.back,s)
 
+class DoubleLinked(TextBox):
+    def __init__(self,content):
+        super().__init__(content)
+        self.backpt = Rectangle(width = 3)
+        self.backpt.shift(UP*2)
+        self.front = Circle(radius = 0)
+        self.front.move_to(self.backpt.get_edge_center(RIGHT))
+        self.add(self.front,self.backpt)
+        self.backarrow = None
+        self.previous = None
+    def attachprevious(self, prev): #only for initialisation
+        self.previous = prev
+        self.backarrow = link(self.backpt,self.previous.front)
+        self.add(self.backarrow)
+    def connectprevious(self,prev,s):
+        self.previous = None
+        self.backarrow.connect(prev.front,s)
+    def connect(self,node,s):
+        super().connect(node,s)
+        self.next_node.connectprevious(self,s)
+    def new_next(self, content):
+        self.next_node = DoubleLinked(content)
+        self.next_node.move_to(self)
+        self.next_node.shift(RIGHT*(self.sq.width+1))
+        self.arrow = link(self.pt,self.next_node.back)
+        self.add(self.arrow)
+        self.next_node.attachprevious(self)
+        return(self.next_node)
+    def disconnect_back(self,s):
+        self.previous = None
+        self.backarrow.disconnect(s)
+    def disconnect(self, s):
+        self.next_node.disconnect_back(s)
+        super().disconnect(s)
+
 class link(Arrow):
     def __init__(self, s, e):
         super().__init__()
@@ -100,7 +135,7 @@ class LinkedListNode(VGroup):
         self.last = newnode
         
         self.add(self.last)
-        return (self.last,arrow)
+        return (self.last)
         
 
 def slash(p1,p2,s):
