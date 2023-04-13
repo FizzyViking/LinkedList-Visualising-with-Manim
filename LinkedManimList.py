@@ -4,11 +4,11 @@ class TextBox(VGroup):
     def __init__(self, content):
         super().__init__()
         self.sq = Rectangle(width = 3)
-        self.pt = Rectangle(width =3)
+        self.pt = Rectangle(width =3,height=1)
         self.back = Circle(radius=0)
         self.content = Text(content)
         self.add(self.sq,self.content,self.pt,self.back)
-        self.pt.move_to([self.sq.get_center()[0],-2,0])
+        self.pt.move_to([self.sq.get_center()[0],-1.5,0])
         self.content.move_to(self.sq.get_center())
         self.back.move_to(self.pt.get_edge_center(LEFT))
         #self.back.shift(UP*0.3)
@@ -34,8 +34,8 @@ class TextBox(VGroup):
 class DoubleLinked(TextBox):
     def __init__(self,content):
         super().__init__(content)
-        self.backpt = Rectangle(width = 3)
-        self.backpt.shift(UP*2)
+        self.backpt = Rectangle(width = self.pt.width,height = self.pt.height)
+        self.backpt.shift(UP*1.5)
         self.front = Circle(radius = 0)
         self.front.move_to(self.backpt.get_edge_center(RIGHT))
         self.add(self.front,self.backpt)
