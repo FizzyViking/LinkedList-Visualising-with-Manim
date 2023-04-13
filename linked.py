@@ -29,6 +29,7 @@ class DLinkedList(Scene):
         self.add(anim)
         self.remove(boxy)
         self.play(Create(anim.backarrow),Create(anim.previous.arrow))
+        self.play(my_mobject.animate.shift(UP))
 
 
 class multiLink(MovingCameraScene):
@@ -91,10 +92,9 @@ class multiLinkcut(MovingCameraScene):
         sq.put_start_and_end_on((0,3,0),(0,1.5,0))
         self.add(sq)
         mob = LinkedListNode(DoubleLinked("0"))
+        self.add(mob)
         #self.play(Create(mob))
-        center = mob.get_center()
         cam = VGroup(self.camera.frame,sq,arrowname)
-        arr = mob.start
         for x in range(4):
             y = x+1
             name = str(y)
@@ -116,5 +116,6 @@ class multiLinkcut(MovingCameraScene):
 
         #self.play(mob.animate(run_time=y/4).shift(LEFT*3*y))
         self.play(cam.animate(run_time=y/10).move_to((4*5.5,0,0)))
+        self.play(cam.animate.set_width(100))
         anim = mob.cut_range(5,6,self)
         self.play(anim.animate.shift(UP*7))

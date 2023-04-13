@@ -45,6 +45,7 @@ class DoubleLinked(TextBox):
         self.previous = prev
         self.backarrow = link(self.backpt,self.previous.front)
         self.add(self.backarrow)
+        #print(self.content.text, " : ",prev.content.text)
     def connectprevious(self,prev,s):
         self.previous = None
         self.backarrow.connect(prev.front,s)
@@ -94,7 +95,6 @@ class link(Arrow):
         ex,ey,ez = self.end.get_center()
         distance = ex-sx
         middlex = (distance)*0.35+sx
-        middley = (middlex-sx)*dy+sy
         cutpoint = (middlex,(middlex-sx)*dy+sy,0)
         cutstartx = cutpoint[0]-0.2
         cutstarty = cutpoint[1]+0.5
