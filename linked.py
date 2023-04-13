@@ -80,3 +80,41 @@ class multiLink(MovingCameraScene):
         self.add(anim)
         self.remove(boxy)
         self.play(Create(last.arrow))
+
+
+class multiLinkcut(MovingCameraScene):
+    def construct(self):
+        sq = Arrow()
+        arrowname = Text("The Allmighty Finger of God")
+        arrowname.move_to((0,3.5,0))
+        self.add(arrowname)
+        sq.put_start_and_end_on((0,3,0),(0,1.5,0))
+        self.add(sq)
+        mob = LinkedListNode(DoubleLinked("0"))
+        #self.play(Create(mob))
+        center = mob.get_center()
+        cam = VGroup(self.camera.frame,sq,arrowname)
+        arr = mob.start
+        for x in range(4):
+            y = x+1
+            name = str(y)
+            #self.play(mob.animate(run_time=y/4).shift(LEFT*3*y))
+            #self.play(cam.animate(run_time=y/4).move_to((4*y,0,0)))
+            #self.play(boxy.animate.shift(DOWN*10))
+            anim = mob.add_node(name)
+            self.add(anim)
+            #self.play(Create(arr.arrow))
+            #self.play(mob.animate(run_time = 0.25).shift(RIGHT*3*y))
+            #self.play(cam.animate(run_time = 0.25).move_to((0,0,0)))
+            #self.play(Wait(run_time=0.25))
+            arr = anim
+
+        for z in range(15):
+            name = str(z+y+1)
+            a = mob.add_node(name)
+            self.add(a)
+
+        #self.play(mob.animate(run_time=y/4).shift(LEFT*3*y))
+        self.play(cam.animate(run_time=y/10).move_to((4*5.5,0,0)))
+        anim = mob.cut_range(5,6,self)
+        self.play(anim.animate.shift(UP*7))

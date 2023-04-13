@@ -27,6 +27,9 @@ class TextBox(VGroup):
     def connect(self, node,s):
         self.next_node = node
         self.arrow.connect(node.back,s)
+    def attach(self,node):
+        self.next_node = node
+        self.arrow.end = node.back
 
 class DoubleLinked(TextBox):
     def __init__(self,content):
@@ -62,6 +65,9 @@ class DoubleLinked(TextBox):
     def disconnect(self, s):
         self.next_node.disconnect_back(s)
         super().disconnect(s)
+    def attach(self,node):
+        super().attach(node)
+        self.next_node.attachprevious
 
 class link(Arrow):
     def __init__(self, s, e):
@@ -89,8 +95,6 @@ class link(Arrow):
         distance = ex-sx
         middlex = (distance)*0.35+sx
         middley = (middlex-sx)*dy+sy
-
-        diff = middley-(middlex-sx)*dy*-1
         cutpoint = (middlex,(middlex-sx)*dy+sy,0)
         cutstartx = cutpoint[0]-0.2
         cutstarty = cutpoint[1]+0.5
@@ -107,7 +111,8 @@ class link(Arrow):
 
         a = Arrow()
         a.put_start_and_end_on((middlex,(middlex-sx)*dy+sy,0),endpoint)
-        s.play(a.animate.shift(DOWN*5))
+        s.play(a.animate.shift(DOWN*10))
+        s.remove(a)
 
 
 class LinkedListNode(VGroup):
@@ -131,11 +136,53 @@ class LinkedListNode(VGroup):
         self.last = newnode
         """""
         newnode = self.last.new_next(t)
-        arrow = self.last.arrow
         self.last = newnode
         
         self.add(self.last)
         return (self.last)
+    def append_existing_node(self,n):
+        self.last.attach(n)
+        self.add(n)
+        self.last = n
+    def cut_range(self,x,y,s):
+        n = self.start
+        for _ in range(x-1):
+            if(n.next_node == None):
+                return None
+            n = n.next_node
+        cutstart = n
+        n = cutstart.next_node
+        segment = LinkedListNode(n)
+        for _ in range(y-x):
+            if(n.next_node == None):
+                break
+            n = n.next_node
+            segment.append_existing_node(n)
+            self.remove(n)
+        if(n.next_node == None):
+            self.last = cutstart
+            cutstart.diconnect(s)
+            return segment
+        diff = cutstart.next_node.get_x()-cutstart.get_x()
+        print(diff)
+        cutend = n.next_node
+        n.disconnect(s)
+        cutstart.disconnect(s)
+        n = cutend
+        g = VGroup()
+        g.add(n)
+        while (n.next_node != None):
+            n = n.next_node
+            g.add(n)
+        self.last = n
+        s.play(segment.animate.shift(UP*(segment.height+1)))
+
+        cutstart.connect(cutend,s)
+        s.play(g.animate.shift(LEFT*(cutend.sq.get_x()-cutstart.sq.get_x()-diff)))
+        return segment
+
+
+
         
 
 def slash(p1,p2,s):
