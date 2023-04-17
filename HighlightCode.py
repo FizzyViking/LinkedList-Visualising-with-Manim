@@ -13,5 +13,9 @@ class HighlightCode(Scene):
         self.play(
             Indicate(rendered_code[2].chars[4]), Indicate(rendered_code[2].chars[5]))
         self.wait(1.5)
+        box = Rectangle()
         self.play(
-            Circumscribe(rendered_code[2].chars[4]), Circumscribe(rendered_code[2].chars[5]))
+            Circumscribe(rendered_code[2].chars[4][4]), Circumscribe(rendered_code[2].chars[5][7]))
+        self.play(box.animate.surround(rendered_code[2].chars[5][7]))
+        g_part = VGroup(box, rendered_code[2].chars[5][7])
+        self.play(g_part.animate.shift(DOWN*4))
