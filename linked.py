@@ -1,5 +1,4 @@
 from manim import *
-
 from LinkedManimList import *
 
 class LinkedList(Scene):
