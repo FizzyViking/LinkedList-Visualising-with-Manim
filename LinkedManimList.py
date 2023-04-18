@@ -23,7 +23,11 @@ class TextBox(VGroup):
         return(self.next_node)
     def disconnect(self, s):
         self.next_node = None
-        self.arrow.disconnect(s)
+        p = Circle(radius=0)
+        p.move_to(self.pt.get_edge_center(RIGHT))
+        self.arrow.connect(p,s)
+        self.arrow.end = None
+        #self.arrow.disconnect(s)
     def connect(self, node,s):
         self.next_node = node
         self.arrow.connect(node.back,s)
@@ -62,9 +66,13 @@ class DoubleLinked(TextBox):
         return(self.next_node)
     def disconnect_back(self,s):
         self.previous = None
-        self.backarrow.disconnect(s)
+        p = Circle(radius=0)
+        p.move_to(self.backpt.get_edge_center(LEFT))
+        self.backarrow.connect(p,s)
+        self.backarrow.end == None
     def disconnect(self, s):
-        self.next_node.disconnect_back(s)
+        if self.next_node.previous == self:
+            self.next_node.disconnect_back(s)
         super().disconnect(s)
     def attach(self,node):
         super().attach(node)
@@ -85,7 +93,8 @@ class link(Arrow):
         ex,ey,sz = e.get_center()
         return((ey-sy)/(ex-sx))
     def connect(self,e,s):
-        p = Point(self.get_end())
+        p = Circle(radius = 0)
+        p.move_to(self.get_end())
         self.end = p
         s.play(p.animate.move_to(e))
         self.end = e
@@ -115,11 +124,14 @@ class link(Arrow):
         s.remove(a)
 
 
+
+
 class LinkedListNode(VGroup):
     def __init__(self, node):
         super().__init__()
         self.start = node
         self.add(self.start)
+        self.count = 1
         self.last = node
     def add_node(self, t):
         """""
@@ -139,11 +151,13 @@ class LinkedListNode(VGroup):
         self.last = newnode
         
         self.add(self.last)
+        self.count += 1
         return (self.last)
     def append_existing_node(self,n):
         self.last.attach(n)
         self.add(n)
         self.last = n
+        self.count += 1
     def cut_range(self,x,y,s):
         n = self.start
         for _ in range(x-1):
@@ -152,6 +166,7 @@ class LinkedListNode(VGroup):
             n = n.next_node
         cutstart = n
         n = cutstart.next_node
+        self.remove(n)
         segment = LinkedListNode(n)
         for _ in range(y-x):
             if(n.next_node == None):
@@ -159,15 +174,19 @@ class LinkedListNode(VGroup):
             n = n.next_node
             segment.append_existing_node(n)
             self.remove(n)
+            self.count -= 1
         if(n.next_node == None):
             self.last = cutstart
-            cutstart.diconnect(s)
+            s.add(segment)
+            cutstart.disconnect(s)
             return segment
         diff = cutstart.next_node.get_x()-cutstart.get_x()
         print(diff)
         cutend = n.next_node
+        s.play(segment.animate.shift(UP*(segment.height+1)))
+        cutstart.connect(cutend,s)
         n.disconnect(s)
-        cutstart.disconnect(s)
+        segment.start.disconnect_back(s)
         n = cutend
         g = VGroup()
         g.add(n)
@@ -175,11 +194,26 @@ class LinkedListNode(VGroup):
             n = n.next_node
             g.add(n)
         self.last = n
-        s.play(segment.animate.shift(UP*(segment.height+1)))
-
-        cutstart.connect(cutend,s)
         s.play(g.animate.shift(LEFT*(cutend.sq.get_x()-cutstart.sq.get_x()-diff)))
         return segment
+    def insert(self,lst,x,s):
+        self.add(lst)
+        n = self.start
+        for _ in range(x-1):
+            n = n.next_node
+        cutstart = n
+        cutend = n.next_node
+        cx,cy,cz = cutend.sq.get_center()
+        lx,ly,lz = lst.start.sq.get_center()
+        g = VGroup()
+        while(n.next_node != None):
+            n = n.next_node
+            g.add(n)
+        s.play(g.animate.shift(RIGHT*3.640625*lst.count))
+        lst.last.connect(cutend,s)
+        cutstart.connect(lst.start,s)
+        s.play(lst.animate.shift(DOWN*(ly-cy)+LEFT*(lx-cx)))
+
 
 
 
