@@ -213,7 +213,15 @@ class LinkedListNode(VGroup):
         lst.last.connect(cutend,s)
         cutstart.connect(lst.start,s)
         s.play(lst.animate.shift(DOWN*(ly-cy)+LEFT*(lx-cx)))
-
+    def get_node(self,n):
+        if(n == 0):
+            return self.start
+        node = self.start
+        for _ in range(n):
+            if node.next_node == None:
+                return node
+            node = node.next_node
+            return node
 
 
 
