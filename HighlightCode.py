@@ -1,8 +1,14 @@
 from manim import *
 from LinkedManimList import *
+from ManimPseudoCode import *
 
 class HighlightCode(Scene):
     def construct(self):
+
+        pseudo = PseudoCode(code_file="DoubleLinkedList.py")
+        print(pseudo.get_codestring())
+
+
         code = Paragraph(
             'class LinkedList():\n', 'def _init_(self):\n','self.data = None'
         )
