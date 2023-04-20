@@ -136,4 +136,3 @@ class multiLinkcut(MovingCameraScene):
         #mob2.last.connect(anim.start,self)
         self.play(mob2.animate.shift(RIGHT*100))
         self.wait(1)
-
