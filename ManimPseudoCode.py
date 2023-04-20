@@ -50,21 +50,34 @@ class PseudoCode(VGroup):
 class TextWithBoundingBox(VGroup):
     def __init__(self, text, fontsize):
         super().__init__()
-        self.text = Text(text, font_size= fontsize)
-        self.box = get_box(self.text,fontsize)
+        self.text = Text(text,font_size=fontsize)
+        self.box = get_box(mob=self.text,fontsize=DEFAULT_FONT_SIZE)
         self.add(self.text,self.box)
+class CodeLine(VGroup):
+    def __init__(self, text, fontsize, linenumber, indentation):
+        super().__init__()
+        self.number = TextWithBoundingBox(str(linenumber),fontsize)
+        self.text = TextWithBoundingBox(text,fontsize)
+        self.text.align_to(self.number,UP)
+        self.text.align_to(self.number,LEFT)
+        self.text.shift(RIGHT*indentation)
+        self.add(self.text)
+        self.add(self.number)
 
 
 
 
-def get_box(self,mob, fontsize : float = DEFAULT_FONT_SIZE): 
-    height = Text("fg", font_size=fontsize)
+
+
+def get_box(mob:Mobject, fontsize): 
+    print(mob, "a")
+    height = Text("fg", font_size=fontsize).height
     padding = 0.0 #might make this a parameter
     r = Rectangle()
     r.stroke_width = 0
     r.stretch_to_fit_width(mob.width+padding)
     r.move_to(mob)
-    r.stretch_to_fit_height((self.height+padding))
+    r.stretch_to_fit_height(height+padding)
     r.align_to(mob,DOWN)
     r.shift(DOWN*(padding/2))
     diffp = (height-mob.height)/height

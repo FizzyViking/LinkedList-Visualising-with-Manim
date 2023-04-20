@@ -33,7 +33,7 @@ class SquareAroundTextExperiments(Scene):
         d = Text("loo")
         e = Text("AGURK")
         e.shift(UP)
-        self.add(a,b,c,d,e)
+        #self.add(a,b,c,d,e)
         b.shift(RIGHT*2)
         c.shift(RIGHT*4)
         d.shift(LEFT*2)
@@ -49,11 +49,15 @@ class SquareAroundTextExperiments(Scene):
 
         #print((b.height-c.height)/a.height)
         t = TextSquarer(a.font_size)
-        self.add(t.get_box(a))
-        self.add(t.get_box(b))
-        self.add(t.get_box(c))
-        self.add(t.get_box(d))
-        self.add(t.get_box(e))
+        #self.add(t.get_box(a))
+        #self.add(t.get_box(b))
+        r = VGroup(t.get_box(c),c)
+        l = Line()
+        l.put_start_and_end_on(r.get_edge_center(UP),r.get_edge_center(UP)+RIGHT*2)
+        #self.add(l)
+        #self.add(t.get_box(d))
+        #self.add(t.get_box(e))
+        self.add(CodeLine("mone",DEFAULT_FONT_SIZE,4,0.5))
 
 class TextSquarer:
     def __init__(self,fontsize): #Define fontsize using index on Text object does not return tex object and might not have fontsize property
@@ -62,7 +66,8 @@ class TextSquarer:
         padding = 0.1 #might make this a parameter
         r = Rectangle()
         r.stretch_to_fit_width(mob.width+padding)
-        r.move_to(mob)
+        r.move_to(mob.width+padding)
+        r.stroke_width = 0
         r.stretch_to_fit_height((self.height+padding))
         r.align_to(mob,DOWN)
         r.shift(DOWN*(padding/2))
