@@ -31,7 +31,3 @@ class Front(Scene):
         self.play(boxy.animate.shift(DOWN*10))
         l2 = link(boxy.pt,mob.start.back)
         self.play(Create(l2))
-        l2.disconnect(self)
-        self.play(mob.animate.shift(UP))
-        l2.connect(mob.start.back,self)
-        l2.disconnect(self)

@@ -1,7 +1,6 @@
 from manim import *
 from LinkedManimList import *
 from ManimPseudoCode import *
-
 class HighlightCode(Scene):
     def construct(self):
 
@@ -49,12 +48,43 @@ class SquareAroundTextExperiments(Scene):
 
         #print((b.height-c.height)/a.height)
         t = TextSquarer(a.font_size)
-        self.add(t.get_box(a))
-        self.add(t.get_box(b))
-        self.add(t.get_box(c))
-        self.add(t.get_box(d))
-        self.add(t.get_box(e))
+        #self.add(t.get_box(a))
+        #self.add(t.get_box(b))
+        r = t.get_box(a)
+        l = Line()
+        self.add(r)
+        l.put_start_and_end_on(r.get_edge_center(UP),r.get_edge_center(UP)+RIGHT*2)
+        #self.add(l)
+        #self.add(t.get_box(d))
+        #self.add(t.get_box(e))
+        self.add(CodeLine("mone",DEFAULT_FONT_SIZE,4,0.5))
+        self.add(linker(a,r))
+        self.play(a.animate.shift(UP))
+        a.set_color(YELLOW)
+        print(color_to_int_rgba(a.get_color()))
+        print(r.get_color())
+        self.wait(1)
+        self.play(r.animate.shift(UP))
+        r.stroke_width = 0
+        self.play(a.animate.shift(DOWN))
+        a.set_color(WHITE)
+        self.wait(1)
 
+class linker(Circle):
+    def __init__(self, observed,highligted):
+        self.observed = observed
+        self.highlighted = highligted 
+
+        super().__init__(radius=0)
+        def update(mob):
+            #print(mob.observed.get_color())
+            if(mob.observed.get_color() != mob.highlighted.get_color()):
+                #print("hella")
+                mob.highlighted.stroke_width = 0
+            else:
+                mob.highlighted.stroke_width = 10
+
+        #self.add_updater(update)
 class TextSquarer:
     def __init__(self,fontsize): #Define fontsize using index on Text object does not return tex object and might not have fontsize property
         self.height = Text("fg",font_size=fontsize).height 
@@ -62,7 +92,8 @@ class TextSquarer:
         padding = 0.1 #might make this a parameter
         r = Rectangle()
         r.stretch_to_fit_width(mob.width+padding)
-        r.move_to(mob)
+        r.move_to(mob.width+padding)
+        r.stroke_width = 10
         r.stretch_to_fit_height((self.height+padding))
         r.align_to(mob,DOWN)
         r.shift(DOWN*(padding/2))
