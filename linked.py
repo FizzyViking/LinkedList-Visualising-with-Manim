@@ -94,7 +94,7 @@ class multiLinkcut(MovingCameraScene):
         self.add(mob)
         #self.play(Create(mob))
         cam = VGroup(self.camera.frame)
-        for x in range(4):
+        for x in range(8):
             y = x+1
             name = str(y)
             #self.play(mob.animate(run_time=y/4).shift(LEFT*3*y))
@@ -107,10 +107,6 @@ class multiLinkcut(MovingCameraScene):
             #self.play(cam.animate(run_time = 0.25).move_to((0,0,0)))
             #self.play(Wait(run_time=0.25))
             arr = anim
-        for z in range(15):
-            name = str(z+y+1)
-            a = mob.add_node(name)
-            self.add(a)
         five = mob.get_node(5)
         #self.play(mob.animate(run_time=y/4).shift(LEFT*3*y))
         self.play(cam.animate(run_time=y/10).move_to((4*5.5,1,0)))

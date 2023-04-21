@@ -23,6 +23,7 @@ class TextBox(VGroup):
         return(self.next_node)
     def disconnect(self, s):
         self.arrow.state = 2
+        s.play(self.animate.shift((0,0,0)))
         self.next_node = None
         p = Circle(radius=0)
         p.move_to(self.pt.get_edge_center(RIGHT))
@@ -31,6 +32,7 @@ class TextBox(VGroup):
         self.arrow.state = 0
     def connect(self, node,s):
         self.arrow.state = 1
+        s.play(self.animate.shift((0,0,0)))
         self.next_node = node
         self.arrow.connect(node.back,s)
         self.arrow.state = 0
@@ -55,6 +57,7 @@ class DoubleLinked(TextBox):
         #print(self.content.text, " : ",prev.content.text)
     def connectprevious(self,prev,s):
         self.backarrow.state = 1
+        s.play(self.animate.shift((0,0,0)))
         self.previous = None
         self.backarrow.connect(prev.front,s)
         self.backarrow.state = 0
@@ -71,7 +74,7 @@ class DoubleLinked(TextBox):
         return(self.next_node)
     def disconnect_back(self,s):
         self.backarrow.state = 2
-        s.play(self.animate.shift(RIGHT*0))
+        s.play(self.animate.shift((0,0,0)))
         self.previous = None
         p = Circle(radius=0)
         p.move_to(self.backpt.get_edge_center(LEFT))
