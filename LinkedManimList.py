@@ -71,6 +71,7 @@ class DoubleLinked(TextBox):
         return(self.next_node)
     def disconnect_back(self,s):
         self.backarrow.state = 2
+        s.play(self.animate.shift(RIGHT*0))
         self.previous = None
         p = Circle(radius=0)
         p.move_to(self.backpt.get_edge_center(LEFT))

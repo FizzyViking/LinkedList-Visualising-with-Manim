@@ -69,6 +69,8 @@ class CodeLine(VGroup):
         self.text.shift(RIGHT*indentation)
         self.add(self.text)
         self.add(self.number)
+        self.boundingbox = get_box(self,fontsize)
+        self.add(self.boundingbox)
 
 
 
@@ -80,7 +82,7 @@ def get_box(mob:Mobject, fontsize):
     height = Text("fg", font_size=fontsize).height
     padding = 0.0 #might make this a parameter
     r = Rectangle()
-    r.stroke_width = 0
+    r.stroke_width = 1
     r.stretch_to_fit_width(mob.width+padding)
     r.move_to(mob)
     r.stretch_to_fit_height(height+padding)
@@ -88,6 +90,9 @@ def get_box(mob:Mobject, fontsize):
     r.shift(DOWN*(padding/2))
     diffp = (height-mob.height)/height
     print(diffp)
+    if diffp == 0.24500146831390812:
+        r.shift(DOWN*(0.24500146831390812-0.2118770857773395)*height)
+        return r
     if diffp == 0 or (diffp >= 0.23 and diffp <= 0.24):
         return r
     r.shift(DOWN*0.2118770857773395*height)
