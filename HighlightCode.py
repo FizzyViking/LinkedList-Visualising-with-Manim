@@ -69,6 +69,12 @@ class SquareAroundTextExperiments(Scene):
         self.play(a.animate.shift(DOWN))
         a.set_color(WHITE)
         self.wait(1)
+class CodeLineTest(Scene):
+    def construct(self):
+        #self.add(CodeLine("gggg",DEFAULT_FONT_SIZE,1,1))
+        #self.add(CodeLine("dddd",DEFAULT_FONT_SIZE,1,1))
+        self.add(CodeLine("pppp",DEFAULT_FONT_SIZE,1,1))
+        #self.add(CodeLine("llll",DEFAULT_FONT_SIZE,1,1))
 
 class linker(Circle):
     def __init__(self, observed,highligted):
@@ -85,24 +91,4 @@ class linker(Circle):
                 mob.highlighted.stroke_width = 10
 
         #self.add_updater(update)
-class TextSquarer:
-    def __init__(self,fontsize): #Define fontsize using index on Text object does not return tex object and might not have fontsize property
-        self.height = Text("fg",font_size=fontsize).height 
-    def get_box(self,mob): 
-        padding = 0.1 #might make this a parameter
-        r = Rectangle()
-        r.stretch_to_fit_width(mob.width+padding)
-        r.move_to(mob.width+padding)
-        r.stroke_width = 10
-        r.stretch_to_fit_height((self.height+padding))
-        r.align_to(mob,DOWN)
-        r.shift(DOWN*(padding/2))
-        topr = r.get_edge_center(UP)[1]
-        topm = mob.get_edge_center(UP)[1]
-        diffp = (self.height-mob.height)/self.height
-        print(diffp)
-        if diffp == 0 or (diffp >= 0.23 and diffp <= 0.24):
-            return r
-        r.shift(DOWN*0.2118770857773395*self.height)
-        return r
 

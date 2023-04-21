@@ -1,6 +1,6 @@
 from manim import *
 from LinkedManimList import *
-
+from ManimPseudoCode import *
 class LinkedList(Scene):
     def construct(self):
         my_mobject = LinkedListNode(TextBox("Hello"))
@@ -94,7 +94,7 @@ class multiLinkcut(MovingCameraScene):
         self.add(mob)
         #self.play(Create(mob))
         cam = VGroup(self.camera.frame)
-        for x in range(4):
+        for x in range(8):
             y = x+1
             name = str(y)
             #self.play(mob.animate(run_time=y/4).shift(LEFT*3*y))
@@ -107,19 +107,17 @@ class multiLinkcut(MovingCameraScene):
             #self.play(cam.animate(run_time = 0.25).move_to((0,0,0)))
             #self.play(Wait(run_time=0.25))
             arr = anim
-        for z in range(15):
-            name = str(z+y+1)
-            a = mob.add_node(name)
-            self.add(a)
         five = mob.get_node(5)
         #self.play(mob.animate(run_time=y/4).shift(LEFT*3*y))
         self.play(cam.animate(run_time=y/10).move_to((4*5.5,1,0)))
         #self.play(cam.animate.set_width(50))
         five = mob.get_node(5)
-        print(five.content.text,"gotten",five.next_node.content.text)
+        #print(five.content.text,"gotten",five.next_node.content.text)
         #five.shift(UP)
-
-        self.add(linker(five.backarrow,five.pt,2))
+        line = CodeLine("peepeepoopoo",DEFAULT_FONT_SIZE,6,1)
+        line.shift(RIGHT*18)
+        self.add(line)
+        self.add(linker(five.backarrow,line.boundingbox,2))
         anim = mob.cut_range(5,6,self)
         #self.play(anim.animate.shift(UP*7))
         self.play(mob.animate.shift(DOWN*50))
@@ -150,7 +148,7 @@ class linker(Circle):
         def update(mob):
             #print(mob.observed.state)
             if(mob.observed.state == state):
-                mob.highlighted.stroke_width = 10
+                mob.highlighted.stroke_width = 2
             else:
                 mob.highlighted.stroke_width = 0
         self.add_updater(update)
