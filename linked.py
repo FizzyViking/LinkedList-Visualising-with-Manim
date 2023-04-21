@@ -107,15 +107,19 @@ class multiLinkcut(MovingCameraScene):
             #self.play(cam.animate(run_time = 0.25).move_to((0,0,0)))
             #self.play(Wait(run_time=0.25))
             arr = anim
-
         for z in range(15):
             name = str(z+y+1)
             a = mob.add_node(name)
             self.add(a)
-
+        five = mob.get_node(5)
         #self.play(mob.animate(run_time=y/4).shift(LEFT*3*y))
         self.play(cam.animate(run_time=y/10).move_to((4*5.5,1,0)))
         #self.play(cam.animate.set_width(50))
+        five = mob.get_node(5)
+        print(five.content.text,"gotten",five.next_node.content.text)
+        #five.shift(UP)
+
+        self.add(linker(five.backarrow,five.pt,2))
         anim = mob.cut_range(5,6,self)
         #self.play(anim.animate.shift(UP*7))
         self.play(mob.animate.shift(DOWN*50))
@@ -136,3 +140,17 @@ class multiLinkcut(MovingCameraScene):
         #mob2.last.connect(anim.start,self)
         self.play(mob2.animate.shift(RIGHT*100))
         self.wait(1)
+
+class linker(Circle):
+    def __init__(self, observed,highligted,state):
+        self.observed = observed
+        self.highlighted = highligted 
+
+        super().__init__(radius=0)
+        def update(mob):
+            #print(mob.observed.state)
+            if(mob.observed.state == state):
+                mob.highlighted.stroke_width = 10
+            else:
+                mob.highlighted.stroke_width = 0
+        self.add_updater(update)

@@ -22,15 +22,18 @@ class TextBox(VGroup):
         self.add(self.arrow)
         return(self.next_node)
     def disconnect(self, s):
+        self.arrow.state = 2
         self.next_node = None
         p = Circle(radius=0)
         p.move_to(self.pt.get_edge_center(RIGHT))
         self.arrow.connect(p,s)
         self.arrow.end = None
-        #self.arrow.disconnect(s)
+        self.arrow.state = 0
     def connect(self, node,s):
+        self.arrow.state = 1
         self.next_node = node
         self.arrow.connect(node.back,s)
+        self.arrow.state = 0
     def attach(self,node):
         self.next_node = node
         self.arrow.end = node.back
@@ -51,8 +54,10 @@ class DoubleLinked(TextBox):
         self.add(self.backarrow)
         #print(self.content.text, " : ",prev.content.text)
     def connectprevious(self,prev,s):
+        self.backarrow.state = 1
         self.previous = None
         self.backarrow.connect(prev.front,s)
+        self.backarrow.state = 0
     def connect(self,node,s):
         super().connect(node,s)
         self.next_node.connectprevious(self,s)
@@ -65,11 +70,13 @@ class DoubleLinked(TextBox):
         self.next_node.attachprevious(self)
         return(self.next_node)
     def disconnect_back(self,s):
+        self.backarrow.state = 2
         self.previous = None
         p = Circle(radius=0)
         p.move_to(self.backpt.get_edge_center(LEFT))
         self.backarrow.connect(p,s)
         self.backarrow.end == None
+        self.backarrow.state = 0
     def disconnect(self, s):
         if self.next_node.previous == self:
             self.next_node.disconnect_back(s)
@@ -82,6 +89,7 @@ class link(Arrow):
     def __init__(self, s, e):
         super().__init__()
         self.start = s
+        self.state = 0
         self.end = e
         def update(mob):
             if(mob.end != None):
@@ -93,35 +101,13 @@ class link(Arrow):
         ex,ey,sz = e.get_center()
         return((ey-sy)/(ex-sx))
     def connect(self,e,s):
+        self.set_color(YELLOW)
         p = Circle(radius = 0)
         p.move_to(self.get_end())
         self.end = p
         s.play(p.animate.move_to(e))
         self.end = e
-    def disconnect(self,s):
-        dy = self.getAngle(self.end)
-        sx,sy,sz = self.start.get_center()
-        ex,ey,ez = self.end.get_center()
-        distance = ex-sx
-        middlex = (distance)*0.35+sx
-        cutpoint = (middlex,(middlex-sx)*dy+sy,0)
-        cutstartx = cutpoint[0]-0.2
-        cutstarty = cutpoint[1]+0.5
-
-        #deltay = (cutpoint[1]/cutstarty)(cutpoint[0]-cutstartx)
-        cutendx = cutpoint[0]+0.2
-        cutendy = cutpoint[1]-0.5
-        #print(distance)
-        endpoint = self.end.get_center()
-        self.end= None
-        slash((cutstartx,cutstarty,0),(cutendx,cutendy,0),s)
-        self.put_start_and_end_on(self.start.get_center(),(middlex,(middlex-sx)*dy+sy,0))
-
-
-        a = Arrow()
-        a.put_start_and_end_on((middlex,(middlex-sx)*dy+sy,0),endpoint)
-        s.play(a.animate.shift(DOWN*10))
-        s.remove(a)
+        self.set_color(WHITE)
 
 
 
@@ -221,7 +207,7 @@ class LinkedListNode(VGroup):
             if node.next_node == None:
                 return node
             node = node.next_node
-            return node
+        return node
 
 
 

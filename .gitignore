@@ -3,6 +3,7 @@ __pycache__/
 media/texts
 media/videos/linked/480p15/partial_movie_files/
 media/videos/Frontinsertion/480p15/partial_movie_files/
+media/videos/HighlightCode/480p15/partial_movie_files/
 *.py[cod]
 *$py.class
 
