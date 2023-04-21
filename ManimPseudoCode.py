@@ -1,7 +1,12 @@
+import os
+import html
+
 from manim import *
 from pathlib import Path
-import os
-
+from pygments import highlight
+from pygments.formatters.html import HtmlFormatter
+from pygments.lexers import get_lexer_by_name, guess_lexer_for_filename
+from pygments.styles import get_all_styles
 
 class PseudoCode(VGroup):
     def __init__(self, 
@@ -18,23 +23,28 @@ class PseudoCode(VGroup):
         self.font_size = font_size
         self.height = Text("fg",font_size=self.font_size).height
         self.line_space = 2
+        self.html_string = None
 
         self.code_string = None
+        self.file_path = None
+
         if self.code_file:
-            self.file_path = self.isValidPath(self.code_file)
+            self.file_path = self.isValidPath()
             self.code_string = self.file_path.read_text(encoding="utf-8")
         elif self.code:
             self.code_string = self.code
         else:
             raise ValueError("No file or code was given")
+        
+        
     
     def get_codestring(self):
         return self.code_string
     
-    def isValidPath(self, file_name):
-        if file_name is None:
+    def isValidPath(self):
+        if self.code_file is None:
             raise ValueError("File of code is not properly defined")
-        return Path(file_name)
+        return Path(self.code_file)
 
     """ Mark up to n lines """
     def marklines(self, line_numbers):
