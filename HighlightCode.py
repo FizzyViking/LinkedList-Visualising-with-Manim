@@ -1,6 +1,11 @@
 from manim import *
 from LinkedManimList import *
 from ManimPseudoCode import *
+
+class PseudoCodeExample(Scene):
+    def construct(self):
+        pseudo = PseudoCode(code_file="DoubleLinkedList.py")
+
 class HighlightCode(Scene):
     def construct(self):
 
@@ -24,6 +29,9 @@ class HighlightCode(Scene):
         self.play(box.animate.surround(rendered_code[2].chars[5][7]))
         g_part = VGroup(box, rendered_code[2].chars[5][7])
         self.play(g_part.animate.shift(DOWN*4))
+
+
+
 class SquareAroundTextExperiments(Scene):
     def construct(self):
         a = Text("lg")

@@ -1,5 +1,6 @@
 import os
 import html
+import sys
 
 from manim import *
 from pathlib import Path
@@ -13,6 +14,7 @@ class PseudoCode(VGroup):
                  code_file: str | os.PathLike | None = None, 
                  code: str | None = None,
                  font_size : float = 24,
+                 language : str | None = None,
                  ):
         
         super().__init__()
@@ -24,6 +26,7 @@ class PseudoCode(VGroup):
         self.height = Text("fg",font_size=self.font_size).height
         self.line_space = 2
         self.html_string = None
+        self.language = language
 
         self.code_string = None
         self.file_path = None
@@ -36,6 +39,8 @@ class PseudoCode(VGroup):
         else:
             raise ValueError("No file or code was given")
         
+        html_string = self.formatCodeToHtml(self.language, self.file_path, self.code_string)
+        
         
     
     def get_codestring(self):
@@ -45,6 +50,31 @@ class PseudoCode(VGroup):
         if self.code_file is None:
             raise ValueError("File of code is not properly defined")
         return Path(self.code_file)
+    
+    ''' format code string to html '''
+    def formatCodeToHtml(self, 
+                         _lexer : str, 
+                         file_path: Path,
+                         code : str
+                         ):
+        
+        html_formatter = HtmlFormatter(
+            linenos = False,
+            noclasses = True,
+        )
+
+        lexer = None
+        html_string = None
+        if not os.path.exists("./out"):
+            os.mkdir("./out")
+        outfile = open("./out/PseudoCodeHTML.txt", "w")
+        if _lexer is None and file_path:
+            lexer = guess_lexer_for_filename(file_path, code)
+            html_string = highlight(code, lexer, html_formatter, outfile)
+        else:
+            html_string = highlight(code, get_lexer_by_name(_lexer, **{}), html_formatter, outfile)
+        return html_string
+        
 
     """ Mark up to n lines """
     def marklines(self, line_numbers):
