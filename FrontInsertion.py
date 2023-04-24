@@ -20,7 +20,7 @@ class Front(Scene):
         header.shift(LEFT*5+DOWN)
         self.play(Create(header))
         l = Arrow()
-        l.put_start_and_end_on(header.get_edge_center(RIGHT), mob.start.get_edge_center(LEFT))
+        l.put_start_and_end_on(header.get_edge_center(RIGHT), mob.start.back.get_center())
         self.play(Create(l))
 
         boxy = TextBox("1000")

@@ -73,7 +73,7 @@ class CodeLineTest(Scene):
     def construct(self):
         #self.add(CodeLine("gggg",DEFAULT_FONT_SIZE,1,1))
         #self.add(CodeLine("dddd",DEFAULT_FONT_SIZE,1,1))
-        self.add(CodeLine("pppp",DEFAULT_FONT_SIZE,1,1))
+        self.add(CodeLine("jjjjjjjg",DEFAULT_FONT_SIZE,1,1))
         #self.add(CodeLine("llll",DEFAULT_FONT_SIZE,1,1))
 
 class linker(Circle):

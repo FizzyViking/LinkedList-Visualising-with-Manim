@@ -103,7 +103,7 @@ def get_box(mob:Mobject, fontsize):
     if diffp == 0.24500146831390812:
         r.shift(DOWN*(0.24500146831390812-0.2118770857773395)*height)
         return r
-    if diffp == 0 or (diffp >= 0.23 and diffp <= 0.24):
+    if diffp <= 0.05 or (diffp >= 0.23 and diffp <= 0.24):
         return r
     r.shift(DOWN*0.2118770857773395*height)
     return r

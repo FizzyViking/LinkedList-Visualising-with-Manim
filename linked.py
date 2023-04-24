@@ -110,16 +110,34 @@ class multiLinkcut(MovingCameraScene):
         five = mob.get_node(5)
         #self.play(mob.animate(run_time=y/4).shift(LEFT*3*y))
         self.play(cam.animate(run_time=y/10).move_to((4*5.5,1,0)))
-        #self.play(cam.animate.set_width(50))
+        self.play(cam.animate.set_width(50))
         five = mob.get_node(5)
         #print(five.content.text,"gotten",five.next_node.content.text)
         #five.shift(UP)
-        line = CodeLine("peepeepoopoo",DEFAULT_FONT_SIZE,6,1)
-        line.shift(RIGHT*18)
-        self.add(line)
-        self.add(linker(five.backarrow,line.boundingbox,2))
-        anim = mob.cut_range(5,6,self)
+        #line = CodeLine("peepeepoopoo",DEFAULT_FONT_SIZE,6,1)
+        #line.shift(RIGHT*18)
+        #self.add(line)
+        #self.add(linker(five.backarrow,line.boundingbox,2))
+        cutstart, anim, cutend, tail = mob.cut_range(5,6,self)
+        self.add(anim)
         #self.play(anim.animate.shift(UP*7))
+
+        #cutting animations
+        vertdist = (anim.height+1)
+        self.play(anim.animate.shift(UP*vertdist))
+
+        c1,c2 = cutstart.connect(cutend)
+        self.play(c1[0])
+        cutstart.arrow.end = c1[1]
+        self.play(c2[0])
+        cutend.backarrow.end = c2[1]
+
+        dcl1, dcl2 = anim.last.disconnect()
+        self.play(dcl1[0])
+        dc1, dc2= anim.start.disconnect_back()
+        self.play(dc1)
+        diff = cutend.sq.get_x()-anim.start.sq.get_x()
+        self.play(tail.animate.shift(LEFT*diff))
         self.play(mob.animate.shift(DOWN*50))
         mob2 = LinkedListNode(DoubleLinked("A"))
         mob2.add_node("B")
@@ -131,12 +149,29 @@ class multiLinkcut(MovingCameraScene):
         mob2.add_node("H")
         self.play(Create(mob2))
         self.add(mob2)
-        mob2.insert(anim,5,self)
+        cs,ce,g = mob2.insert(anim,5)
+        self.play(g.animate.shift(RIGHT*3.640625*anim.count))
+
+
+        c1,c2 = anim.last.connect(ce)
+        self.play(c1[0])
+        anim.last.arrow.end = c1[1]
+        self.play(c2[0])
+        ce.backarrow.end = c2[1]
+
+        c1,c2 = cs.connect(anim.start)
+        self.play(c1[0])
+        cs.arrow.end = c1[1]
+        self.play(c2[0])
+        anim.start.backarrow.end = c2[1]
+
+        self.play(anim.animate.shift(DOWN*vertdist))
         #x = mob2.cut_range(5,20,self)
         #self.play(x.animate.shift(RIGHT*(3.640625*2)))
         #anim.last.connect(x.start,self)
         #mob2.last.connect(anim.start,self)
-        self.play(mob2.animate.shift(RIGHT*100))
+        self.play(mob2.animate.shift(RIGHT*10))
+        
         self.wait(1)
 
 class linker(Circle):
