@@ -151,7 +151,7 @@ class LinkedNodes(VGroup):
             n = n.next_node
             g.add(n)
         self.last = n
-        
+
         return (cutstart,segment,cutend,g)
     def insert(self,lst,x):
         self.add(lst)

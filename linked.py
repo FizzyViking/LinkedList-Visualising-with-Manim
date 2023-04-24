@@ -153,7 +153,7 @@ class multiLinkcut(MovingCameraScene):
 
         #Happy ending
         self.play(segment.animate.shift(DOWN*vertdist))
-        self.play(new_list.animate.shift(RIGHT*10))
+        self.play(Rotate(new_list,PI*100))
         self.wait(1)
 
 class linker(Circle):
