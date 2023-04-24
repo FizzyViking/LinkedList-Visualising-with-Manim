@@ -13,4 +13,4 @@ class BezierCurve(Scene):
                     y_range=(0,6,1),
                     )
         self.add(curve, axes)
-        self.play(Create(curve), run_time=5, rate_func=linear)
+        self.play(Create(curve), run_time=2, rate_func=linear)
