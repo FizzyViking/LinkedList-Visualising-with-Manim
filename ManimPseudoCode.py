@@ -39,16 +39,19 @@ class PseudoCode(VGroup):
         else:
             raise ValueError("No file or code was given")
         
-        html_string = self.formatCodeToHtml(self.language, self.file_path, self.code_string)
+        self.html_string = self.formatCodeToHtml(self.language, self.file_path, self.code_string)
+        self.writeHtmlString()
+
+        lines = self.html_string.split("\n")
+        for i in range(len(lines)):
+            print(lines[i]+"\n")
         
-        
-    
     def get_codestring(self):
         return self.code_string
     
     def isValidPath(self):
         if self.code_file is None:
-            raise ValueError("File of code is not properly defined")
+            raise ValueError("Code file path is not properly defined")
         return Path(self.code_file)
     
     ''' format code string to html '''
@@ -59,21 +62,24 @@ class PseudoCode(VGroup):
                          ):
         
         html_formatter = HtmlFormatter(
-            linenos = False,
+            linenos = 'inline',
             noclasses = True,
         )
-
+        
         lexer = None
-        html_string = None
-        if not os.path.exists("./out"):
-            os.mkdir("./out")
-        outfile = open("./out/PseudoCodeHTML.txt", "w")
+        html_string = ""
+
         if _lexer is None and file_path:
             lexer = guess_lexer_for_filename(file_path, code)
-            html_string = highlight(code, lexer, html_formatter, outfile)
+            html_string = highlight(code, lexer, html_formatter)
         else:
-            html_string = highlight(code, get_lexer_by_name(_lexer, **{}), html_formatter, outfile)
+            html_string = highlight(code, get_lexer_by_name(_lexer, **{}), html_formatter)
         return html_string
+    
+    def writeHtmlString(self):
+        output_dir = Path() / "assets" / "code"
+        output_dir.mkdir(parents=True, exist_ok=True)
+        (output_dir / f"{self.file_path}.html").write_text(self.html_string)
         
 
     """ Mark up to n lines """
