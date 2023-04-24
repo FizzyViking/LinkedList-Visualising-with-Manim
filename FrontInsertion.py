@@ -5,7 +5,7 @@ from LinkedManimList import *
 
 class Front(Scene):
     def construct(self):
-        mob = LinkedListNode(TextBox("0"))
+        mob = LinkedNodes(SingleLinked("0"))
         center = mob.get_center()
 
         for x in range(3):
@@ -23,7 +23,7 @@ class Front(Scene):
         l.put_start_and_end_on(header.get_edge_center(RIGHT), mob.start.back.get_center())
         self.play(Create(l))
 
-        boxy = TextBox("1000")
+        boxy = SingleLinked("1000")
         boxy.move_to(center)
         boxy.shift(UP*10)
         self.play(mob.animate.shift(RIGHT*4))
