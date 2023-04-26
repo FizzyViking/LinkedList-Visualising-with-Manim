@@ -10,7 +10,6 @@ class HighlightCode(Scene):
     def construct(self):
 
         pseudo = PseudoCode(code_file="DoubleLinkedList.py")
-        print(pseudo.get_codestring())
 
 
         code = Paragraph(

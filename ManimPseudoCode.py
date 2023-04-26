@@ -90,14 +90,25 @@ class PseudoCode(VGroup):
         start = lines[0].find(">")
         lines[0] = lines[0][start + 1 : ]
 
-        end = lines[0].find(">")
+        print("Before processing: ",lines[0]+"\n")
+
+        line = ""
+
         colr_start = lines[0].find("color: ")
         colr_value = lines[0][colr_start + 7 : colr_start + 14]
         print(colr_value)
 
-        line = lines[0][end: ]
-        print("Before processing: ",lines[0]+"\n")
-        print("After: ",line)
+        end = lines[0].find(">")
+        lines[0] = lines[0][end + 1 : ]
+        end_span = lines[0].find("</span>")
+        line = line + lines[0][ : end_span]
+        print("After processing: ",line)
+        nxt_span = lines[0][end_span + 7].find("<")
+
+        # read everything between span tags
+        for idx in range(end_span+7, nxt_span):
+            line = line + lines[0][idx]
+        
 
     """ Mark up to n lines """
     def marklines(self, line_numbers):
