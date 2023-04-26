@@ -73,22 +73,23 @@ class CodeLineTest(Scene):
     def construct(self):
         #self.add(CodeLine("gggg",DEFAULT_FONT_SIZE,1,1))
         #self.add(CodeLine("dddd",DEFAULT_FONT_SIZE,1,1))
-        self.add(CodeLine("jjjjjjjg",DEFAULT_FONT_SIZE,1,1))
         #self.add(CodeLine("llll",DEFAULT_FONT_SIZE,1,1))
-
-class linker(Circle):
-    def __init__(self, observed,highligted):
-        self.observed = observed
-        self.highlighted = highligted 
-
-        super().__init__(radius=0)
-        def update(mob):
-            #print(mob.observed.get_color())
-            if(mob.observed.get_color() != mob.highlighted.get_color()):
-                #print("hella")
-                mob.highlighted.stroke_width = 0
-            else:
-                mob.highlighted.stroke_width = 10
-
-        #self.add_updater(update)
-
+        pse = PseudoCode()
+        sq = Square()
+        sq.shift(LEFT*2)
+        self.add(sq)
+        pse.add_line("Spin",1,BLUE)
+        pse.add_line("Speen",2,WHITE)
+        pse.add_line("Speeeen",3,YELLOW)
+        pse.add_line("Speeeeeeeen",1,WHITE)
+        #pse.lines[3].shift(RIGHT)
+        self.add(pse)
+        self.play(pse._highlight(0))
+        self.play(Rotate(sq,PI))
+        self.play(pse._highlight(1))
+        self.play(Rotate(sq,PI*2))
+        self.play(pse._highlight(2))
+        self.play(Rotate(sq,PI*3))
+        self.play(pse._highlight(3))
+        self.play(Rotate(sq,PI*8))
+        self.wait(1)
