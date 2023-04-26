@@ -40,7 +40,7 @@ class PseudoCode(VGroup):
             raise ValueError("No file or code was given")
         
         self.html_string = self.formatCodeToHtml(self.language, self.file_path, self.code_string)
-        self.html_string = self.html_string.replace("<span></span>", "")
+        self.html_string = self.html_string.replace("<span></span>", "") # Pygment bug
         self.writeHtmlString()
         self.gen_code_text()
         
@@ -80,16 +80,24 @@ class PseudoCode(VGroup):
         (output_dir / f"{self.file_path}.html").write_text(self.html_string)
 
     def gen_code_text(self):
-        lines = self.html_string.split("\n")
-        start = lines[0].find("<pre")
+        start_ptr = self.html_string.find("<pre")
+        self.html_string = self.html_string[start_ptr : ]
 
         ''' Read each line and count the number of tab characters 
             Save each line as its line number along with its color style value
         '''
-        
+        lines = self.html_string.split("\n")
+        start = lines[0].find(">")
+        lines[0] = lines[0][start + 1 : ]
 
-        for i in range(len(lines)):
-            print(lines[i].split("<span"))        
+        end = lines[0].find(">")
+        colr_start = lines[0].find("color: ")
+        colr_value = lines[0][colr_start + 7 : colr_start + 14]
+        print(colr_value)
+
+        line = lines[0][end: ]
+        print("Before processing: ",lines[0]+"\n")
+        print("After: ",line)
 
     """ Mark up to n lines """
     def marklines(self, line_numbers):
