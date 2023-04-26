@@ -40,11 +40,9 @@ class PseudoCode(VGroup):
             raise ValueError("No file or code was given")
         
         self.html_string = self.formatCodeToHtml(self.language, self.file_path, self.code_string)
+        self.html_string = self.html_string.replace("<span></span>", "")
         self.writeHtmlString()
-
-        lines = self.html_string.split("\n")
-        for i in range(len(lines)):
-            print(lines[i]+"\n")
+        self.gen_code_text()
         
     def get_codestring(self):
         return self.code_string
@@ -62,7 +60,7 @@ class PseudoCode(VGroup):
                          ):
         
         html_formatter = HtmlFormatter(
-            linenos = 'inline',
+            linenos = False,
             noclasses = True,
         )
         
@@ -80,7 +78,18 @@ class PseudoCode(VGroup):
         output_dir = Path() / "assets" / "code"
         output_dir.mkdir(parents=True, exist_ok=True)
         (output_dir / f"{self.file_path}.html").write_text(self.html_string)
+
+    def gen_code_text(self):
+        lines = self.html_string.split("\n")
+        start = lines[0].find("<pre")
+
+        ''' Read each line and count the number of tab characters 
+            Save each line as its line number along with its color style value
+        '''
         
+
+        for i in range(len(lines)):
+            print(lines[i].split("<span"))        
 
     """ Mark up to n lines """
     def marklines(self, line_numbers):
