@@ -84,7 +84,7 @@ class multiLink(MovingCameraScene):
 
 class multiLinkcut(MovingCameraScene):
     def construct(self):
-        h = 2
+        h = 1
         p = PseudoCode(code_file= "splice.txt",font_size=18)
         self.add(p)
         p.to_corner(UL)
