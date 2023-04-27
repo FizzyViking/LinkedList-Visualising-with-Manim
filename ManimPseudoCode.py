@@ -1,5 +1,6 @@
 import os
 import html
+import sys
 
 from manim import *
 from pathlib import Path
@@ -7,12 +8,14 @@ from pygments import highlight
 from pygments.formatters.html import HtmlFormatter
 from pygments.lexers import get_lexer_by_name, guess_lexer_for_filename
 from pygments.styles import get_all_styles
+from collections import defaultdict
 
 class PseudoCode(VGroup):
     def __init__(self, 
                  code_file: str | os.PathLike | None = None, 
                  code: str | None = None,
                  font_size : float = 24,
+                 language : str | None = None,
                  ):
         
         super().__init__()
@@ -24,6 +27,9 @@ class PseudoCode(VGroup):
         self.line_height = Text("fg",font_size=self.font_size).height
         self.line_space = 0.5
         self.html_string = None
+        self.language = language
+        self.code_lines = defaultdict(str)
+        
 
         self.code_string = None
         self.file_path = None
@@ -42,15 +48,23 @@ class PseudoCode(VGroup):
         else:
             raise ValueError("No file or code was given")
         
+        self.html_string = self.formatCodeToHtml(self.language, self.file_path, self.code_string)
+        self.html_string = self.html_string.replace("<span></span>", "") # Pygment bug
+        self.writeHtmlString()
+        self.gen_code_text()
         
-    
-    def get_codestring(self):
-        return self.code_string
+        for idx, line in enumerate(self.code_string.split("\n")):
+            self.code_lines[idx+1] = line
+        
+        for i in range(len(self.code_lines)):
+            self.code_lines[i+1] = f'{i+1}' + " " f'{self.code_lines[i+1]}'
+        
     
     def isValidPath(self):
         if self.code_file is None:
-            raise ValueError("File of code is not properly defined")
+            raise ValueError("Code file path is not properly defined")
         return Path(self.code_file)
+    
     def add_line(self,content,indent:int = 1,col:str = WHITE):
         self.linecount += 1
         l = CodeLine(content,self.font_size,self.linecount,indent,col)
@@ -65,6 +79,7 @@ class PseudoCode(VGroup):
             self.highlighting_box.align_to(l,LEFT)
             #print("streching", self.highlighting_box.width, l.width),
         self.lastline = l
+
     def highlight(self,i):
         i +=1
         self.highlighting_box.stroke_width=2
@@ -81,6 +96,64 @@ class PseudoCode(VGroup):
             return self.highlighting_box.animate.shift(DOWN*y+LEFT*x)
 
 
+
+    ''' format code string to html '''
+    def formatCodeToHtml(self, 
+                         _lexer : str, 
+                         file_path: Path,
+                         code : str
+                         ):
+        
+        html_formatter = HtmlFormatter(
+            linenos = False,
+            noclasses = True,
+        )
+        
+        lexer = None
+        html_string = ""
+
+        if _lexer is None and file_path:
+            lexer = guess_lexer_for_filename(file_path, code)
+            html_string = highlight(code, lexer, html_formatter)
+        else:
+            html_string = highlight(code, get_lexer_by_name(_lexer, **{}), html_formatter)
+        return html_string
+    
+    def writeHtmlString(self):
+        output_dir = Path() / "assets" / "code"
+        output_dir.mkdir(parents=True, exist_ok=True)
+        (output_dir / f"{self.file_path}.html").write_text(self.html_string)
+
+    def gen_code_text(self):
+        start_ptr = self.html_string.find("<pre")
+        self.html_string = self.html_string[start_ptr : ]
+
+        ''' Read each line and count the number of tab characters 
+            Save each line as its line number along with its color style value
+        '''
+        lines = self.html_string.split("\n")
+        start = lines[0].find(">")
+        lines[0] = lines[0][start + 1 : ]
+
+        print("Before processing: ",lines[0]+"\n")
+
+        line = ""
+
+        colr_start = lines[0].find("color: ")
+        colr_value = lines[0][colr_start + 7 : colr_start + 14]
+        print(colr_value)
+
+        end = lines[0].find(">")
+        lines[0] = lines[0][end + 1 : ]
+        end_span = lines[0].find("</span>")
+        line = line + lines[0][ : end_span]
+        print("After processing: ",line)
+        nxt_span = lines[0][end_span + 7].find("<")
+
+        # read everything between span tags
+        for idx in range(end_span+7, nxt_span):
+            line = line + lines[0][idx]
+        
 
 class TextWithBoundingBox(VGroup):
     def __init__(self, text, fontsize:int=48,cocol:str = WHITE):
