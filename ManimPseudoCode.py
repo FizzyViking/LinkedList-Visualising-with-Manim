@@ -8,6 +8,7 @@ from pygments import highlight
 from pygments.formatters.html import HtmlFormatter
 from pygments.lexers import get_lexer_by_name, guess_lexer_for_filename
 from pygments.styles import get_all_styles
+from collections import defaultdict
 
 class PseudoCode(VGroup):
     def __init__(self, 
@@ -27,6 +28,8 @@ class PseudoCode(VGroup):
         self.line_space = 2
         self.html_string = None
         self.language = language
+        self.code_lines = defaultdict(str)
+        
 
         self.code_string = None
         self.file_path = None
@@ -44,8 +47,12 @@ class PseudoCode(VGroup):
         self.writeHtmlString()
         self.gen_code_text()
         
-    def get_codestring(self):
-        return self.code_string
+        for idx, line in enumerate(self.code_string.split("\n")):
+            self.code_lines[idx+1] = line
+        
+        for i in range(len(self.code_lines)):
+            self.code_lines[i+1] = f'{i+1}' + " " f'{self.code_lines[i+1]}'
+        
     
     def isValidPath(self):
         if self.code_file is None:
