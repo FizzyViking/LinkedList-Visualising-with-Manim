@@ -84,36 +84,51 @@ class multiLink(MovingCameraScene):
 
 class multiLinkcut(MovingCameraScene):
     def construct(self):
+        h = 2
+        p = PseudoCode(code_file= "splice.txt",font_size=18)
+        self.add(p)
+        p.to_corner(UL)
+        #p.align_to(self.camera.frame,UP)
         #Creating original list
         original_list = LinkedNodes(DoubleLinked("0"))
         self.add(original_list)
-        cam = VGroup(self.camera.frame)
+        cam = VGroup(self.camera.frame,p)
         for x in range(8):
             y = x+1
             name = str(y)
             original_list.add_node(name)
 
         #Move camera into place and size
-        self.play(cam.animate(run_time=y/10).move_to((4*5.5,1,0)))
-        self.play(cam.animate.set_width(50))
-
+        cam.set_width(30)
+        cam.move_to((4*5,5,0))
+        #p.align_to(self.camera.frame,UP)
         #cutting animations
+        h += 1
+        self.play(p._highlight(h))
         cutstart, segment, cutend, tail = original_list.cut_range(5,6,self)
         self.add(segment)
         vertdist = (segment.height+1)
         self.play(segment.animate.shift(UP*vertdist))
 
         #Connect cutstart and cutend
+        h += 1
+        self.play(p._highlight(h))
         c1,c2 = cutstart.connect(cutend)
         self.play(c1[0])
         cutstart.arrow.end = c1[1]
+        h += 1
+        self.play(p._highlight(h))
         self.play(c2[0])
         cutend.back_arrow.end = c2[1]
 
         #Disconnect segment
         dcl1, dcl2 = segment.last.disconnect()
+        h += 1
+        self.play(p._highlight(h))        
         self.play(dcl1[0])
         dc1, dc2= segment.start.disconnect_back()
+        h += 1
+        self.play(p._highlight(h))
         self.play(dc1)
 
         #Move Tail next to cutstart
@@ -122,6 +137,8 @@ class multiLinkcut(MovingCameraScene):
         self.play(original_list.animate.shift(DOWN*50))
 
         #Creating a new list
+        h += 1
+        self.play(p._highlight(h))
         new_list = LinkedNodes(DoubleLinked("A"))
         new_list.add_node("B")
         new_list.add_node("C")
@@ -138,23 +155,32 @@ class multiLinkcut(MovingCameraScene):
         self.play(g.animate.shift(RIGHT*3.640625*segment.count))
 
         #Connect last of segment with first of tail
+        h += 1
+        self.play(p._highlight(h))
         c1,c2 = segment.last.connect(ce)
         self.play(c1[0])
         segment.last.arrow.end = c1[1]
+        h += 1
+        self.play(p._highlight(h))
         self.play(c2[0])
         ce.back_arrow.end = c2[1]
 
         #Connect new_list to first of segment
         c1,c2 = cs.connect(segment.start)
+        h += 1
+        self.play(p._highlight(h))
         self.play(c1[0])
         cs.arrow.end = c1[1]
+        h += 1
+        self.play(p._highlight(h))
         self.play(c2[0])
         segment.start.back_arrow.end = c2[1]
 
         #Happy ending
         self.play(segment.animate.shift(DOWN*vertdist))
         self.play(Rotate(new_list,PI*100))
-        self.wait(1)
+
+        #self.wait(1)
 
 class linker(Circle):
     def __init__(self, observed,highligted,state):

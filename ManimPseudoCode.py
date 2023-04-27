@@ -54,11 +54,12 @@ class PseudoCode(VGroup):
         self.gen_code_text()
         
         for idx, line in enumerate(self.code_string.split("\n")):
-            self.code_lines[idx+1] = line
+            #self.code_lines[idx+1] = line
+            self.add_line(f'{idx+1}' + " " f'{line}')
         
-        for i in range(len(self.code_lines)):
-            self.code_lines[i+1] = f'{i+1}' + " " f'{self.code_lines[i+1]}'
-            self.add_line(self.code_lines[i+1])
+        #for i in range(len(self.code_lines)):
+            #self.code_lines[i+1] = f'{i+1}' + " " f'{self.code_lines[i+1]}'
+            #self.add_line(f'{i+1}' + " " f'{self.code_lines[i+1]}')
         
     
     def isValidPath(self):
@@ -86,6 +87,7 @@ class PseudoCode(VGroup):
         self.highlighting_box.stroke_width=2
         self.highlighting_box.align_to(self.lines[i],UP)
         self.highlighting_box.align_to(self.lines[i],LEFT)
+    @override_animate(highlight)
     def _highlight(self,i):
         if(self.highlighting_box.stroke_width == 0):
             self.highlight(i)
@@ -160,7 +162,7 @@ class TextWithBoundingBox(VGroup):
     def __init__(self, text, fontsize:int=48,col:str = WHITE):
         super().__init__()
         self.text = Text(("o"+text),font_size=fontsize,color=col)
-        mob = Text("o")
+        mob = Text("o",font_size=  fontsize)
         mob.move_to(self.text[0])
         self.text.remove(self.text[0])
         height = Text("fg", font_size=fontsize).height

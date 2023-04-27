@@ -1,0 +1,13 @@
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%;">precedure splice(l,l2,x,y,z)
+    cut(l,x,y)
+        select nodes x to y
+        x.previous.next = y.next
+        y.next.previous = x.previous
+        y.next = None
+        x.previous = None
+    procedure insert(l2,x,y,z)
+        y.next = z.next
+        z.next.previous = y
+        z.next = x
+        x.previous = z
+</pre></div>
