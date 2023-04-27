@@ -40,8 +40,7 @@ class PseudoCode(VGroup):
         elif self.code:
             self.code_string = self.code
         else:
-            print("all")
-            #raise ValueError("No file or code was given")
+            raise ValueError("No file or code was given")
         
         
     
@@ -52,7 +51,7 @@ class PseudoCode(VGroup):
         if self.code_file is None:
             raise ValueError("File of code is not properly defined")
         return Path(self.code_file)
-    def add_line(self,content,indent,col):
+    def add_line(self,content,indent:int = 1,col:str = WHITE):
         self.linecount += 1
         l = CodeLine(content,self.font_size,self.linecount,indent,col)
         self.add(l)
@@ -67,6 +66,7 @@ class PseudoCode(VGroup):
             #print("streching", self.highlighting_box.width, l.width),
         self.lastline = l
     def highlight(self,i):
+        i +=1
         self.highlighting_box.stroke_width=2
         self.highlighting_box.align_to(self.lines[i],UP)
         self.highlighting_box.align_to(self.lines[i],LEFT)
@@ -83,13 +83,13 @@ class PseudoCode(VGroup):
 
 
 class TextWithBoundingBox(VGroup):
-    def __init__(self, text, fontsize,col):
+    def __init__(self, text, fontsize:int=48,cocol:str = WHITE):
         super().__init__()
         self.text = Text(text,font_size=fontsize,color = col)
         self.box = get_box(mob=self.text,fontsize=fontsize)
         self.add(self.text,self.box)
 class CodeLine(VGroup):
-    def __init__(self, text, fontsize,  linenumber, indentation,col):
+    def __init__(self, text, fontsize:int=48,  linenumber:int=1, indentation:int = 1,  col:str = WHITE):
         super().__init__()
         self.number = TextWithBoundingBox(str(linenumber),fontsize,WHITE)
         self.text = TextWithBoundingBox(text,fontsize,col)
