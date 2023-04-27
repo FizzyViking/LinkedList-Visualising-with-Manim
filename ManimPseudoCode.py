@@ -81,7 +81,7 @@ class PseudoCode(VGroup):
         self.lastline = l
 
     def highlight(self,i):
-        i +=1
+        i -=1
         self.highlighting_box.stroke_width=2
         self.highlighting_box.align_to(self.lines[i],UP)
         self.highlighting_box.align_to(self.lines[i],LEFT)
@@ -90,7 +90,7 @@ class PseudoCode(VGroup):
             self.highlight(i)
             return Create(self.highlighting_box)
         else:
-            l = self.lines[i]
+            l = self.lines[i-1]
             y = self.highlighting_box.get_edge_center(DOWN)[1]-l.get_edge_center(DOWN)[1]
             x = self.highlighting_box.get_edge_center(LEFT)[0]-l.get_edge_center(LEFT)[0]
             return self.highlighting_box.animate.shift(DOWN*y+LEFT*x)
@@ -156,7 +156,7 @@ class PseudoCode(VGroup):
         
 
 class TextWithBoundingBox(VGroup):
-    def __init__(self, text, fontsize:int=48,cocol:str = WHITE):
+    def __init__(self, text, fontsize:int=48,col:str = WHITE):
         super().__init__()
         self.text = Text(text,font_size=fontsize,color = col)
         self.box = get_box(mob=self.text,fontsize=fontsize)
