@@ -1,0 +1,12 @@
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%;">procedure splice(l,l2,x,y,z)
+        select nodes x to y from l1
+        x.previous.next = y.next
+        y.next.previous = x.previous
+        y.next = None
+        x.previous = None
+        insert x, y sublist after z in l2
+        y.next = z.next
+        z.next.previous = y
+        z.next = x
+        x.previous = z
+</pre></div>

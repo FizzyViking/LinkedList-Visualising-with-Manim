@@ -1,7 +1,15 @@
 <div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%;"><span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">DoubleLinkedList</span>():
-    <span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">__init__</span>(<span style="color: #008000">self</span>):
+    <span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">__init__</span>(<span style="color: #008000">self</span>, data):
         <span style="color: #008000">self</span><span style="color: #666666">.</span>next <span style="color: #666666">=</span> <span style="color: #008000; font-weight: bold">None</span>
         <span style="color: #008000">self</span><span style="color: #666666">.</span>prev <span style="color: #666666">=</span> <span style="color: #008000; font-weight: bold">None</span>
-        <span style="color: #008000">self</span><span style="color: #666666">.</span>data <span style="color: #666666">=</span> <span style="color: #008000; font-weight: bold">None</span>
-        <span style="color: #008000">self</span><span style="color: #666666">.</span>gaga <span style="color: #666666">=</span> <span style="color: #008000; font-weight: bold">None</span>
+        <span style="color: #008000">self</span><span style="color: #666666">.</span>data <span style="color: #666666">=</span> data
+    <span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">insert_middle</span>(<span style="color: #008000">self</span>, prev_node, data):
+        <span style="color: #008000; font-weight: bold">if</span> prev_node <span style="color: #AA22FF; font-weight: bold">is</span> <span style="color: #008000; font-weight: bold">None</span>:
+            <span style="color: #008000; font-weight: bold">return</span>
+        new_node <span style="color: #666666">=</span> DoubleLinkedList(data)
+        new_node<span style="color: #666666">.</span>next <span style="color: #666666">=</span> prev_node<span style="color: #666666">.</span>next
+        prev_node<span style="color: #666666">.</span>next <span style="color: #666666">=</span> new_node
+        new_node<span style="color: #666666">.</span>prev <span style="color: #666666">=</span> prev_node
+        <span style="color: #008000; font-weight: bold">if</span> new_node<span style="color: #666666">.</span>next <span style="color: #AA22FF; font-weight: bold">is</span> <span style="color: #AA22FF; font-weight: bold">not</span> <span style="color: #008000; font-weight: bold">None</span>:
+            new_node<span style="color: #666666">.</span>next<span style="color: #666666">.</span>prev <span style="color: #666666">=</span> new_node
 </pre></div>
