@@ -68,9 +68,9 @@ class PseudoCode(VGroup):
             raise ValueError("Code file path is not properly defined")
         return Path(self.code_file)
     
-    def add_line(self,content,col:str = WHITE):
+    def add_line(self,content,col:list = []):
         self.linecount += 1
-        l = TextWithBoundingBox(content,self.font_size,col)
+        l = TextWithBoundingBox(content,self.font_size)
         self.add(l)
         self.lines.append(l)
         if(self.lastline != None):
@@ -83,6 +83,8 @@ class PseudoCode(VGroup):
             self.max_line_length = self.highlighting_box.width
             #print("streching", self.highlighting_box.width, l.width),
         self.lastline = l
+        for start,end,c in col:
+            l.text[start:end].set_color(c)
 
     def highlight(self,i):
         i -=1
@@ -104,7 +106,7 @@ class PseudoCode(VGroup):
         last = l[end]
         subhighlighter = Rectangle(width = last.get_edge_center(RIGHT)[0]-first.get_edge_center(LEFT)[0], height= self.line_height)
         subhighlighter.stroke_width = 1
-        #first.set_color(YELLOW)
+        #l[1:4].set_color(YELLOW)
         subhighlighter.align_to(first,LEFT).align_to(l,UP)
         self.add(subhighlighter)
         return(subhighlighter)
@@ -151,27 +153,24 @@ class PseudoCode(VGroup):
         start = lines[0].find(">")
         lines[0] = lines[0][start + 1 : ]
 
-        code_line_list = []
+        print("Before processing: ",lines[0]+"\n")
 
-        '''
-        for i in range(len(lines)):
-            line = ""
+        line = ""
 
-            colr_start = lines[i].find("color: ")
-            colr_value = lines[i][colr_start + 7 : colr_start + 14]
+        colr_start = lines[0].find("color: ")
+        colr_value = lines[0][colr_start + 7 : colr_start + 14]
+        print(colr_value)
 
-            end = lines[i].find(">")
-            lines[i] = lines[i][end + 1 : ]
-            end_span = lines[i].find("</span>")
-            line = line + lines[i][ : end_span]
-            nxt_span = lines[i][end_span + 7].find("<")
+        end = lines[0].find(">")
+        lines[0] = lines[0][end + 1 : ]
+        end_span = lines[0].find("</span>")
+        line = line + lines[0][ : end_span]
+        print("After processing: ",line)
+        nxt_span = lines[0][end_span + 7].find("<")
 
-            # read everything between span tags
-            for idx in range(end_span+7, nxt_span):
-                line = line + lines[i][idx]
-            code_line_list.append(line)
-        
-        print("Lines: ", *code_line_list)'''
+        # read everything between span tags
+        for idx in range(end_span+7, nxt_span):
+            line = line + lines[0][idx]
         
 
 class TextWithBoundingBox(VGroup):
