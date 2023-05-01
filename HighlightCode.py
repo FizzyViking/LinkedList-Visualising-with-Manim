@@ -9,7 +9,7 @@ class PseudoCodeExample(Scene):
 class HighlightCode(Scene):
     def construct(self):
 
-        pseudo = PseudoCode(code_file="DoubleLinkedList.py")
+        #pseudo = PseudoCode(code_file="DoubleLinkedList.py")
 
 
         code = Paragraph(
@@ -17,17 +17,19 @@ class HighlightCode(Scene):
         )
 
         rendered_code = Code("DoubleLinkedList.py", tab_width=4, background="window",
-                            language="Python", font="Monospace")
+                            language="Python")
         self.add(rendered_code)
         self.play(
             Indicate(rendered_code[2].chars[4]), Indicate(rendered_code[2].chars[5]))
+        
+
         self.wait(1.5)
         box = Rectangle()
         self.play(
             Circumscribe(rendered_code[2].chars[4][4]), Circumscribe(rendered_code[2].chars[5][7]))
-        self.play(box.animate.surround(rendered_code[2].chars[5][7]))
-        g_part = VGroup(box, rendered_code[2].chars[5][7])
-        self.play(g_part.animate.shift(DOWN*4))
+        self.play(box.animate.surround(rendered_code[2].chars[3]))
+        #g_part = VGroup(box, rendered_code[2].chars[5][7])
+        #self.play(g_part.animate.shift(DOWN*4))
 
 
 

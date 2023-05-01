@@ -14,3 +14,8 @@ class BezierCurve(Scene):
                     )
         self.add(curve, axes)
         self.play(Create(curve), run_time=2, rate_func=linear)
+
+class ManimCodeSimple(Scene):
+    def construct(self):
+        rendered_code = Code(file_name="DoubleLinkedList.py")
+        self.add(rendered_code)

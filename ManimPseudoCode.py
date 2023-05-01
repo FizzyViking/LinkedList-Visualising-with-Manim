@@ -151,24 +151,27 @@ class PseudoCode(VGroup):
         start = lines[0].find(">")
         lines[0] = lines[0][start + 1 : ]
 
-        print("Before processing: ",lines[0]+"\n")
+        code_line_list = []
 
-        line = ""
+        '''
+        for i in range(len(lines)):
+            line = ""
 
-        colr_start = lines[0].find("color: ")
-        colr_value = lines[0][colr_start + 7 : colr_start + 14]
-        print(colr_value)
+            colr_start = lines[i].find("color: ")
+            colr_value = lines[i][colr_start + 7 : colr_start + 14]
 
-        end = lines[0].find(">")
-        lines[0] = lines[0][end + 1 : ]
-        end_span = lines[0].find("</span>")
-        line = line + lines[0][ : end_span]
-        print("After processing: ",line)
-        nxt_span = lines[0][end_span + 7].find("<")
+            end = lines[i].find(">")
+            lines[i] = lines[i][end + 1 : ]
+            end_span = lines[i].find("</span>")
+            line = line + lines[i][ : end_span]
+            nxt_span = lines[i][end_span + 7].find("<")
 
-        # read everything between span tags
-        for idx in range(end_span+7, nxt_span):
-            line = line + lines[0][idx]
+            # read everything between span tags
+            for idx in range(end_span+7, nxt_span):
+                line = line + lines[i][idx]
+            code_line_list.append(line)
+        
+        print("Lines: ", *code_line_list)'''
         
 
 class TextWithBoundingBox(VGroup):
