@@ -7,15 +7,25 @@ class PseudoCodeExample(Scene):
         pseudo = PseudoCode(code_file="DoubleLinkedList.py")
         self.add(*pseudo.getColoredWords())
 
+class HighlightwithBox(Scene):
+    def construct(self):
+        rendered_code = Code("DoubleLinkedList.py", tab_width=4, background="window",
+                            language="Python")
+        self.add(rendered_code)
+        
+        box = Rectangle()
+        box.stretch_to_fit_height(rendered_code.code.chars[0].height)
+        self.play(box.animate.surround(rendered_code.code.chars[0]))
+
+        #box.stretch_to_fit_height(rendered_code.code.chars[1].height)
+        #self.play(box.animate.surround(rendered_code.code.chars[1]))
+
+        #box.stretch_to_fit_width(rendered_code.code.chars[2].width)
+        #self.play(box.animate.move_to(rendered_code.code.chars[2].get_center()))
+        #self.play(box.animate.surround(rendered_code.code.chars[2]))
+
 class HighlightCode(Scene):
     def construct(self):
-
-        #pseudo = PseudoCode(code_file="DoubleLinkedList.py")
-
-
-        code = Paragraph(
-            'class LinkedList():\n', 'def _init_(self):\n','self.data = None'
-        )
 
         rendered_code = Code("DoubleLinkedList.py", tab_width=4, background="window",
                             language="Python")
@@ -26,9 +36,7 @@ class HighlightCode(Scene):
 
         self.wait(1.5)
         box = Rectangle()
-        self.play(
-            Circumscribe(rendered_code[2].chars[4][4]), Circumscribe(rendered_code[2].chars[5][7]))
-        self.play(box.animate.surround(rendered_code[2].chars[3]))
+        self.play(box.animate.surround(rendered_code[2]))
         #g_part = VGroup(box, rendered_code[2].chars[5][7])
         #self.play(g_part.animate.shift(DOWN*4))
 
