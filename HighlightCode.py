@@ -5,6 +5,7 @@ from ManimPseudoCode import *
 class PseudoCodeExample(Scene):
     def construct(self):
         pseudo = PseudoCode(code_file="DoubleLinkedList.py")
+        self.add(*pseudo.getColoredWords())
 
 class HighlightCode(Scene):
     def construct(self):

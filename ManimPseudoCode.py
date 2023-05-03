@@ -30,11 +30,11 @@ class PseudoCode(VGroup):
         self.language = language
         self.code_lines = defaultdict(str)
         
-
         self.code_string = None
         self.file_path = None
         self.linecount = 0
         self.lastline = None
+        self.wordColors = dict()
 
         self.highlighting_box = Rectangle(height = self.line_height,width = 0.1)
         self.highlighting_box.stroke_width = 0
@@ -52,7 +52,7 @@ class PseudoCode(VGroup):
         self.html_string = self.html_string.replace("<span></span>", "") # Pygment bug
         self.writeHtmlString()
         self.gen_code_text()
-        
+
         for idx, line in enumerate(self.code_string.split("\n")):
             #self.code_lines[idx+1] = line
             self.add_line(f'{idx+1}' + " " f'{line}')
@@ -61,7 +61,14 @@ class PseudoCode(VGroup):
             #self.code_lines[i+1] = f'{i+1}' + " " f'{self.code_lines[i+1]}'
             #self.add_line(f'{i+1}' + " " f'{self.code_lines[i+1]}')
         
-    
+    def getColoredWords(self):
+        textItems = []
+        for word, clr in list(self.wordColors.items()):
+            #textItems.append(Tex(word).set_color(clr))
+            textItems.append(Text(word, color=clr))
+            print(word, clr)
+        return textItems
+
     def isValidPath(self):
         if self.code_file is None:
             raise ValueError("Code file path is not properly defined")
@@ -139,27 +146,33 @@ class PseudoCode(VGroup):
         lines[0] = lines[0][start + 1 : ]
 
         code_line_list = []
-
-        '''
+        
         for i in range(len(lines)):
             line = ""
+            lineIdx = 0
+            if lines[i].find("</pre>"):
+                break
+            while lineIdx < len(lines[i]):
+                # Read color value and content of span tag
+                colr_start = lines[i].find("color: ")
+                colr_value = lines[i][colr_start + 7 : colr_start + 14]
 
-            colr_start = lines[i].find("color: ")
-            colr_value = lines[i][colr_start + 7 : colr_start + 14]
+                end = lines[i][lineIdx : ].find(">")
+                lines[i] = lines[i][end + 1 : ]
+                end_span = lines[i].find("</span>")
+                line = line + lines[i][ : end_span]
+                self.wordColors[line] = colr_value
+                lineIdx = end_span+7
 
-            end = lines[i].find(">")
-            lines[i] = lines[i][end + 1 : ]
-            end_span = lines[i].find("</span>")
-            line = line + lines[i][ : end_span]
-            nxt_span = lines[i][end_span + 7].find("<")
-
-            # read everything between span tags
-            for idx in range(end_span+7, nxt_span):
-                line = line + lines[i][idx]
-            code_line_list.append(line)
-        
-        print("Lines: ", *code_line_list)'''
-        
+                # read everything after span tag until next span tag or end of line
+                while lineIdx < len(lines[i]):
+                    if lines[i][lineIdx] == '<':
+                        break
+                    else:
+                        line = line + lines[i][lineIdx]
+                        lineIdx += 1
+                code_line_list.append(line)
+                #print(*code_line_list)
 
 class TextWithBoundingBox(VGroup):
     def __init__(self, text, fontsize:int=48,col:str = WHITE):
