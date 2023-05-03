@@ -152,7 +152,7 @@ class multiLinkcut(MovingCameraScene):
 
         #Inserting into the vgroup
         cs,ce,g = new_list.insert(segment,5)
-        self.play(g.animate.shift(RIGHT*3.640625*segment.count))
+        self.play(g.animate.shift(RIGHT*4*segment.count))
 
         #Connect last of segment with first of tail
         h += 1
