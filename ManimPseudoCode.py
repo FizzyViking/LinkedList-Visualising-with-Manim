@@ -16,6 +16,7 @@ class PseudoCode(VGroup):
                  code: str | None = None,
                  font_size : float = 24,
                  language : str | None = None,
+                 line_space : float = 0.1
                  ):
         
         super().__init__()
@@ -24,8 +25,8 @@ class PseudoCode(VGroup):
         self.code_file = code_file
         self.lines = []
         self.font_size = font_size
-        self.line_height = Text("fg",font_size=self.font_size).height
-        self.line_space = 0.1
+        self.line_height = Text("fg",font_size=self.font_size).height+0.1
+        self.line_space = line_space
         self.html_string = None
         self.language = language
         self.code_lines = defaultdict(str)
@@ -74,9 +75,9 @@ class PseudoCode(VGroup):
             raise ValueError("Code file path is not properly defined")
         return Path(self.code_file)
     
-    def add_line(self,content,col:str = WHITE):
+    def add_line(self,content,col:list = []):
         self.linecount += 1
-        l = TextWithBoundingBox(content,self.font_size,col)
+        l = TextWithBoundingBox(content,self.font_size)
         self.add(l)
         self.lines.append(l)
         if(self.lastline != None):
@@ -86,15 +87,17 @@ class PseudoCode(VGroup):
         if self.highlighting_box.width < l.width:
             self.highlighting_box.stretch_to_fit_width(l.width).stretch_to_fit_height(l.height)
             self.highlighting_box.align_to(l,LEFT)
+            self.max_line_length = self.highlighting_box.width
             #print("streching", self.highlighting_box.width, l.width),
         self.lastline = l
+        for start,end,c in col:
+            l.text[start:end].set_color(c)
 
     def highlight(self,i):
         i -=1
         self.highlighting_box.stroke_width=2
         self.highlighting_box.align_to(self.lines[i],UP)
         self.highlighting_box.align_to(self.lines[i],LEFT)
-    @override_animate(highlight)
     def _highlight(self,i):
         if(self.highlighting_box.stroke_width == 0):
             self.highlight(i)
@@ -104,6 +107,18 @@ class PseudoCode(VGroup):
             y = self.highlighting_box.get_edge_center(DOWN)[1]-l.get_edge_center(DOWN)[1]
             x = self.highlighting_box.get_edge_center(LEFT)[0]-l.get_edge_center(LEFT)[0]
             return self.highlighting_box.animate.shift(DOWN*y+LEFT*x)
+    def highlight_section(self,line,start,end):
+        l = self.get_text_of_line(line)
+        first = l[start]
+        last = l[end]
+        subhighlighter = Rectangle(width = last.get_edge_center(RIGHT)[0]-first.get_edge_center(LEFT)[0], height= self.line_height)
+        subhighlighter.stroke_width = 1
+        #l[1:4].set_color(YELLOW)
+        subhighlighter.align_to(first,LEFT).align_to(l,UP)
+        self.add(subhighlighter)
+        return(subhighlighter)
+    def get_text_of_line(self,line):
+        return self.lines[line-1].text
 
 
 
