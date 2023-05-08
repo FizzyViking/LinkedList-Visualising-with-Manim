@@ -98,15 +98,16 @@ class PseudoCode(VGroup):
         self.highlighting_box.stroke_width=2
         self.highlighting_box.align_to(self.lines[i],UP)
         self.highlighting_box.align_to(self.lines[i],LEFT)
-    def _highlight(self,i):
+    @override_animation(highlight)
+    def _highlight(self,i, **kwargs):
         if(self.highlighting_box.stroke_width == 0):
             self.highlight(i)
-            return Create(self.highlighting_box)
+            return Create(self.highlighting_box, **kwargs)
         else:
             l = self.lines[i-1]
             y = self.highlighting_box.get_edge_center(DOWN)[1]-l.get_edge_center(DOWN)[1]
             x = self.highlighting_box.get_edge_center(LEFT)[0]-l.get_edge_center(LEFT)[0]
-            return self.highlighting_box.animate.shift(DOWN*y+LEFT*x)
+            return self.highlighting_box.animate(**kwargs).shift(DOWN*y+LEFT*x)
     def highlight_section(self,line,start,end):
         l = self.get_text_of_line(line)
         first = l[start]
