@@ -128,11 +128,7 @@ class LinkedNodes(VGroup):
         self.count += 1
     def cut_range(self,x,y,s):
         #Find xth node
-        n = self.start
-        for _ in range(x-1):
-            if(n.get_next() == None):
-                return None
-            n = n.get_next()
+        n = self.get_node(x)
         
         cutstart = n
         n = cutstart.get_next()
@@ -165,17 +161,12 @@ class LinkedNodes(VGroup):
             n = n.get_next()
             g.add(n)
         self.last = n
-
         return (cutstart,segment,cutend,g)
     def insert(self,lst,x):
         self.add(lst)
         self.count +=lst.count
-        n = self.start
-        for _ in range(x-1):
-            if(n.get_next() == None):
-                break
-            n = n.get_next()
-        cutstart = n
+        cutstart = self.get_node(x)
+        n = cutstart
         if(n.get_next() == None):
             self.last = lst.last
         else:
@@ -189,7 +180,7 @@ class LinkedNodes(VGroup):
         if(n == 0):
             return self.start
         node = self.start
-        for _ in range(n):
+        for _ in range(n-1):
             if node.get_next() == None:
                 return node
             node = node.get_next()

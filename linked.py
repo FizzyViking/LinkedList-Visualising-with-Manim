@@ -78,7 +78,7 @@ class multiLink(MovingCameraScene):
         boxy.move_to(center)
         boxy.shift(UP*10+RIGHT*4*y)
         #self.play(mob.animate(run_time=y/4).shift(LEFT*3*y))
-        t = Text("Linear runtime moment.")
+        t = Text("Linear runtime.")
         t.shift(UP*3)
         self.add(t)
         cam.add(t)
@@ -186,20 +186,4 @@ class multiLinkcut(MovingCameraScene):
 
         #Happy ending
         self.play(segment.animate.shift(DOWN*vertdist))
-        self.play(Rotate(new_list,PI*100))
-
-        #self.wait(1)
-
-class linker(Circle):
-    def __init__(self, observed,highligted,state):
-        self.observed = observed
-        self.highlighted = highligted 
-
-        super().__init__(radius=0)
-        def update(mob):
-            #print(mob.observed.state)
-            if(mob.observed.state == state):
-                mob.highlighted.stroke_width = 2
-            else:
-                mob.highlighted.stroke_width = 0
-        self.add_updater(update)
+        self.wait(1)
