@@ -112,10 +112,10 @@ class PseudoCode(VGroup):
         l = self.get_text_of_line(line)
         first = l[start]
         last = l[end]
-        subhighlighter = Rectangle(width = last.get_edge_center(RIGHT)[0]-first.get_edge_center(LEFT)[0], height= self.line_height)
-        subhighlighter.stroke_width = 1
-        #l[1:4].set_color(YELLOW)
-        subhighlighter.align_to(first,LEFT).align_to(l,UP)
+        subhighlighter = Rectangle(width = last.get_edge_center(RIGHT)[0]-first.get_edge_center(LEFT)[0], height= self.lines[line-1].height)
+        subhighlighter.set_color(YELLOW)
+        subhighlighter.stroke_width = 1.5
+        subhighlighter.align_to(first,LEFT).align_to(self.lines[line-1],UP)
         self.add(subhighlighter)
         return(subhighlighter)
     def get_text_of_line(self,line):

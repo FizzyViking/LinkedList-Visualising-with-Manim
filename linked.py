@@ -81,10 +81,12 @@ class multiLink(MovingCameraScene):
         t = Text("Linear runtime.")
         t.shift(UP*3)
         self.add(t)
+        sh = pc.highlight_section(2,6,15)
         cam.add(t)
         self.play(pc.animate(run_time = 0.25).highlight(2))
         self.play(cam.animate(run_time=y/10).move_to((4*y,cam.get_y(),0)))
         self.remove(t)
+        pc.remove(sh)
         self.play(pc.animate(run_time = 0.25).highlight(3))
         self.play(boxy.animate.shift(DOWN*10))
         last = mob.last
@@ -94,6 +96,7 @@ class multiLink(MovingCameraScene):
         self.remove(last.arrow)
         self.play(pc.animate(run_time = 0.25).highlight(4))
         self.play(Create(last.arrow))
+        self.wait(1)
 
 
 class multiLinkcut(MovingCameraScene):
@@ -123,7 +126,6 @@ class multiLinkcut(MovingCameraScene):
         self.add(segment)
         vertdist = (segment.height+1)
         self.play(segment.animate.shift(UP*vertdist))
-
         #Connect cutstart and cutend
         h += 1
         self.play(p._highlight(h))

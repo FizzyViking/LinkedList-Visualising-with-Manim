@@ -53,7 +53,8 @@ class DoubleLinked(SingleLinked):
         self.previous = None
     def attach_previous(self, prev): #only for initialisation
         self.previous = prev
-        self.back_arrow = link(self.back_pt,self.previous.front)
+        if(self.back_arrow == None):
+            self.back_arrow = link(self.back_pt,self.previous.front)
         self.add(self.back_arrow)
     def connect_previous(self,prev):
         if(self.back_arrow == None):
