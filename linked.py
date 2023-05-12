@@ -102,7 +102,7 @@ class multiLinkcut(MovingCameraScene):
         p = PseudoCode(code_file= "splice.txt",font_size=18)
         self.add(p)
         p.to_corner(UL)
-        #p.align_to(self.camera.frame,UP)
+
         #Creating original list
         original_list = LinkedNodes(DoubleLinked("0"))
         self.add(original_list)
@@ -115,7 +115,7 @@ class multiLinkcut(MovingCameraScene):
         #Move camera into place and size
         cam.set_width(30)
         cam.move_to((4*5,5,0))
-        #p.align_to(self.camera.frame,UP)
+
         #cutting animations
         h += 1
         self.play(p._highlight(h))
@@ -128,19 +128,17 @@ class multiLinkcut(MovingCameraScene):
         h += 1
         self.play(p._highlight(h))
         c1,c2 = cutstart.connect(cutend)
-        self.play(c1[0])
-        cutstart.arrow.end = c1[1]
+        self.play(c1)
         h += 1
         self.play(p._highlight(h))
-        self.play(c2[0])
-        cutend.back_arrow.end = c2[1]
+        self.play(c2)
 
         #Disconnect segment
-        dcl1, dcl2 = segment.last.disconnect()
+        dcl1 = segment.last.disconnect()
         h += 1
         self.play(p._highlight(h))        
         self.play(dcl1[0])
-        dc1, dc2= segment.start.disconnect_back()
+        dc1= segment.start.disconnect_back()
         h += 1
         self.play(p._highlight(h))
         self.play(dc1)
@@ -172,23 +170,19 @@ class multiLinkcut(MovingCameraScene):
         h += 1
         self.play(p._highlight(h))
         c1,c2 = segment.last.connect(ce)
-        self.play(c1[0])
-        segment.last.arrow.end = c1[1]
+        self.play(c1)
         h += 1
         self.play(p._highlight(h))
-        self.play(c2[0])
-        ce.back_arrow.end = c2[1]
+        self.play(c2)
 
         #Connect new_list to first of segment
         c1,c2 = cs.connect(segment.start)
         h += 1
         self.play(p._highlight(h))
-        self.play(c1[0])
-        cs.arrow.end = c1[1]
+        self.play(c1)
         h += 1
         self.play(p._highlight(h))
-        self.play(c2[0])
-        segment.start.back_arrow.end = c2[1]
+        self.play(c2)
 
         #Happy ending
         self.play(segment.animate.shift(DOWN*vertdist))

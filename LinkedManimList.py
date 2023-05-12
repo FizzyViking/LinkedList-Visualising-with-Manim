@@ -91,14 +91,19 @@ class link(Arrow):
         super().__init__()
         self.start = s
         self.end = e
+        self.start_record = s.get_center()
+        self.end_record = e.get_center()
         def update(mob):
-            if(mob.end != None):
+            if(mob.end != None and ((mob.end_record != mob.end.get_center()).any() or (mob.start_record != mob.start.get_center()).any())):
                 mob.put_start_and_end_on(mob.start.get_center(), mob.end.get_center())
+                mob.start_record = mob.start.get_center()
+                mob.end_record = mob.end.get_center()
         update(self)
         self.add_updater(update)
     def connect(self,e):
-        self.end = None
-        return (self.animate.put_start_and_end_on(self.start.get_center(), e.get_center()),e)
+        self.end_record = e.get_center()
+        self.end = e
+        return (self.animate.put_start_and_end_on(self.start.get_center(), e.get_center()))
 
 
 
