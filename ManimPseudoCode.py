@@ -2,11 +2,6 @@ import os
 
 from manim import *
 from pathlib import Path
-from pygments import highlight
-from pygments.formatters.html import HtmlFormatter
-from pygments.lexers import get_lexer_by_name, guess_lexer_for_filename
-from pygments.styles import get_all_styles
-from collections import defaultdict
 
 class PseudoCode(VGroup):
     """
@@ -15,13 +10,13 @@ class PseudoCode(VGroup):
     Parameters:
     code_file: File of pseudocode
     code: Optional string of pseudocode, if code_file is not given
+    font_size: Size of font, default: 24
+    line_space: space between lines, default: 0.1
     """
-
     def __init__(self, 
                  code_file: str | os.PathLike | None = None, 
                  code: str | None = None,
                  font_size : float = 24,
-                 language : str | None = None,
                  line_space : float = 0.1
                  ):
         
@@ -33,15 +28,11 @@ class PseudoCode(VGroup):
         self.font_size = font_size
         self.line_height = Text("fg",font_size=self.font_size).height+0.1
         self.line_space = line_space
-        self.html_string = None
-        self.language = language
-        self.code_lines = defaultdict(str)
         
         self.code_string = None
         self.file_path = None
         self.linecount = 0
         self.lastline = None
-        self.wordColors = dict()
 
         self.highlighting_box = Rectangle(height = self.line_height,width = 0.1)
         self.highlighting_box.stroke_width = 0
@@ -54,21 +45,9 @@ class PseudoCode(VGroup):
             self.code_string = self.code
         else:
             raise ValueError("No file or code was given")
-        
-        self.html_string = self.formatCodeToHtml(self.language, self.file_path, self.code_string)
-        self.html_string = self.html_string.replace("<span></span>", "") # Pygment bug
-        self.writeHtmlString()
-        self.gen_code_text()
 
         for idx, line in enumerate(self.code_string.split("\n")):
             self.add_line(f'{idx+1}' + " " f'{line}')
-        
-    def getColoredWords(self):
-        textItems = []
-        for word, clr in list(self.wordColors.items()):
-            #textItems.append(Tex(word).set_color(clr))
-            textItems.append(word.set_color(clr))
-        return Paragraph(*textItems)
 
     def isValidPath(self):
         if self.code_file is None:
@@ -121,73 +100,6 @@ class PseudoCode(VGroup):
     def get_text_of_line(self,line):
         return self.lines[line-1].text
 
-
-
-    ''' format code string to html '''
-    def formatCodeToHtml(self, 
-                         _lexer : str, 
-                         file_path: Path,
-                         code : str
-                         ):
-        
-        html_formatter = HtmlFormatter(
-            linenos = False,
-            noclasses = True,
-        )
-        
-        lexer = None
-        html_string = ""
-
-        if _lexer is None and file_path:
-            lexer = guess_lexer_for_filename(file_path, code)
-            html_string = highlight(code, lexer, html_formatter)
-        else:
-            html_string = highlight(code, get_lexer_by_name(_lexer, **{}), html_formatter)
-        return html_string
-    
-    def writeHtmlString(self):
-        output_dir = Path() / "assets" / "code"
-        output_dir.mkdir(parents=True, exist_ok=True)
-        (output_dir / f"{self.file_path}.html").write_text(self.html_string)
-
-    def gen_code_text(self):
-        start_ptr = self.html_string.find("<pre")
-        self.html_string = self.html_string[start_ptr : ]
-
-        ''' Read each line and count the number of tab characters 
-            Save each line as its line number along with its color style value
-        '''
-        lines = self.html_string.split("\n")
-        start = lines[0].find(">")
-        lines[0] = lines[0][start + 1 : ]
-
-        code_line_list = []
-        
-        for i in range(len(lines)):
-            line = ""
-            lineIdx = 0
-            while lineIdx < len(lines[i]):
-                # Read color value and content of span tag
-                colr_start = lines[i].find("color: ")
-                colr_value = lines[i][colr_start + 7 : colr_start + 14]
-
-                end = lines[i][lineIdx : ].find(">")
-                lines[i] = lines[i][end + 1 : ]
-                end_span = lines[i].find("</span>")
-                line = line + lines[i][ : end_span]
-                if colr_value != "</div>": self.wordColors[line] = colr_value
-                lineIdx = end_span+7
-                
-                # read everything after span tag until next span tag or end of line
-                while lineIdx < len(lines[i]):
-                    if lines[i][lineIdx] == '<':
-                        break
-                    else:
-                        line = line + lines[i][lineIdx]
-                        lineIdx += 1
-                code_line_list.append(line)
-                #print(*code_line_list)
-
 class TextWithBoundingBox(VGroup):
     def __init__(self, text, fontsize:int=48,col:str = WHITE):
         super().__init__()
@@ -221,11 +133,6 @@ class CodeLine(VGroup):
         self.add(self.number)
         self.boundingbox = get_box(self)
         self.add(self.boundingbox)
-
-
-
-
-
 
 def get_box(mob): 
     r = Rectangle().stretch_to_fit_height(mob.height).stretch_to_fit_width(mob.width).align_to(mob,DOWN).align_to(mob,LEFT)
