@@ -14,21 +14,26 @@ class SingleLinked(VGroup):
         self.back.move_to(self.pt.get_edge_center(LEFT))
         self.arrow = None
         self.next_node = None
+
     def new_next(self,content, spacing:int = 1):
         self.attach(self.new_of_own_class(content))
         self.next_node.shift(self.get_center()-self.next_node.get_center()+RIGHT*(self.sq.width+spacing))
         return(self.next_node)
+
     def new_of_own_class(self,content):
         return SingleLinked(content)
+    
     def disconnect(self):
         self.next_node = None
         p = Circle(radius=0)
         p.move_to(self.pt.get_edge_center(RIGHT))
         self.arrow.end = None
         return ([self.arrow.connect(p)])
+    
     def connect(self, node):
         self.next_node = node
         return([self.arrow.connect(node.back)])
+    
     def attach(self,node):
         self.next_node = node
         if(self.arrow == None):
@@ -51,11 +56,13 @@ class DoubleLinked(SingleLinked):
         self.add(self.front,self.back_pt)
         self.back_arrow = None
         self.previous = None
+
     def attach_previous(self, prev): #only for initialisation
         self.previous = prev
         if(self.back_arrow == None):
             self.back_arrow = link(self.back_pt,self.previous.front)
         self.add(self.back_arrow)
+
     def connect_previous(self,prev):
         if(self.back_arrow == None):
             self.back_arrow = link(self.back_pt,self.previous.front)
@@ -63,19 +70,23 @@ class DoubleLinked(SingleLinked):
         self.previous = None
         self.back_arrow.connect(prev.front)
         return (self.back_arrow.connect(prev.front))
+
     def connect(self,node):
         frontc = super().connect(node)
         backc = self.next_node.connect_previous(self)
         frontc.append(backc)
         return(frontc)
+    
     def new_of_own_class(self,content):
         return DoubleLinked(content)
+    
     def disconnect_back(self):
         self.previous = None
         p = Circle(radius=0)
         p.move_to(self.back_pt.get_edge_center(LEFT))
         self.back_arrow.end == None
         return(self.back_arrow.connect(p))
+    
     def disconnect(self):
         backd = None
         if self.next_node.previous == self:
@@ -83,6 +94,7 @@ class DoubleLinked(SingleLinked):
         frontd = super().disconnect()
         frontd.append(backd)
         return (frontd)
+    
     def attach(self,node):
         super().attach(node)
         self.next_node.attach_previous(self)
@@ -95,12 +107,14 @@ class link(Arrow):
         self.start_record = s.get_center()
         self.end_record = e.get_center()
         def update(mob):
+            #If end mobject exists and has moved
             if(mob.end != None and ((mob.end_record != mob.end.get_center()).any() or (mob.start_record != mob.start.get_center()).any())):
                 mob.put_start_and_end_on(mob.start.get_center(), mob.end.get_center())
                 mob.start_record = mob.start.get_center()
                 mob.end_record = mob.end.get_center()
         update(self)
         self.add_updater(update)
+
     def connect(self,e):
         self.end_record = e.get_center()
         self.end = e
@@ -116,21 +130,22 @@ class LinkedNodes(VGroup):
         self.add(self.start)
         self.count = 1
         self.last = node
+
     def add_node(self, t):
         newnode = self.last.new_next(t)
         self.last = newnode
         self.add(self.last)
         self.count += 1
         return (self.last)
+    
     def append_existing_node(self,n):
         self.last.attach(n)
         self.add(n)
         self.last = n
         self.count += 1
+
     def cut_range(self,x,y,s):
-        #Find xth node
-        n = self.get_node(x)
-        
+        n = self.get_node(x) #Find xth node
         cutstart = n
         n = cutstart.get_next()
         self.remove(n)
@@ -163,11 +178,15 @@ class LinkedNodes(VGroup):
             g.add(n)
         self.last = n
         return (cutstart,segment,cutend,g)
+    
     def insert(self,lst,x):
-        self.add(lst)
+        #Adds segment to VGroup
+        self.add(lst) 
         self.count +=lst.count
+
         cutstart = self.get_node(x)
         n = cutstart
+
         if(n.get_next() == None):
             self.last = lst.last
         else:
@@ -176,7 +195,9 @@ class LinkedNodes(VGroup):
         while(n.get_next() != None):
             n = n.get_next()
             g.add(n)
+
         return (cutstart, cutend,g)
+    
     def get_node(self,n):
         if(n == 0):
             return self.start

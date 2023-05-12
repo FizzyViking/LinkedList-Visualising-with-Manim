@@ -33,6 +33,7 @@ class DLinkedList(Scene):
 
 class multiLink(MovingCameraScene):
     def construct(self):
+        #Set starting state
         pc = PseudoCode("multiadd.txt")
         self.add(pc)
         pc.to_corner(UL)
@@ -43,14 +44,14 @@ class multiLink(MovingCameraScene):
         self.play(Create(mob))
         center = mob.get_center()
         arr = mob.start
+
         self.play(pc.animate(run_time = 0.25).highlight(1))
-        for x in range(4):
+        for x in range(4): #Moved to position of new node, node moved down from offscreen, then gets connected
             y = x+1
             name = str(y)
             boxy = SingleLinked(name)
             boxy.move_to(center)
             boxy.shift(UP*10+RIGHT*4*y)
-            #self.play(mob.animate(run_time=y/4).shift(LEFT*3*y))
             self.play(pc.animate(run_time = 0.25).highlight(2))
             self.play(cam.animate(run_time=y/4).move_to((4*y,cam.get_y(),0)))
             self.play(pc.animate(run_time = 0.25).highlight(3))
@@ -61,23 +62,22 @@ class multiLink(MovingCameraScene):
             self.remove(arr.arrow)
             self.play(pc.animate(run_time = 0.25).highlight(4))
             self.play(Create(arr.arrow))
-            #self.play(mob.animate(run_time = 0.25).shift(RIGHT*3*y))
             self.play(pc.animate(run_time = 0.25).highlight(1))
             self.play(cam.animate(run_time = 0.25).move_to((0,cam.get_y(),0)))
             self.play(Wait(run_time=0.25))
             arr = anim
 
-        for z in range(50):
+        for z in range(50): #Creates 50 nodes
             name = str(z+y+1)
             a = mob.add_node(name)
             self.add(a)
-
+        
+        #Traversal to 50+
         y += 51
         name = str(y)
         boxy = SingleLinked(name)
         boxy.move_to(center)
         boxy.shift(UP*10+RIGHT*4*y)
-        #self.play(mob.animate(run_time=y/4).shift(LEFT*3*y))
         t = Text("Linear runtime.")
         t.shift(UP*3)
         self.add(t)
@@ -87,6 +87,8 @@ class multiLink(MovingCameraScene):
         self.play(cam.animate(run_time=y/10).move_to((4*y,cam.get_y(),0)))
         self.remove(t)
         pc.remove(sh)
+
+        #Cration of last node
         self.play(pc.animate(run_time = 0.25).highlight(3))
         self.play(boxy.animate.shift(DOWN*10))
         last = mob.last
