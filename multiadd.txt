@@ -1,0 +1,4 @@
+for loop
+    last = traverse()
+    l = new node
+    last.next = l

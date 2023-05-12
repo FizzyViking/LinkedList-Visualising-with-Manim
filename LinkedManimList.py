@@ -9,7 +9,7 @@ class SingleLinked(VGroup):
         self.back = Circle(radius=0)
         self.content = Text(content)
         self.add(self.sq,self.content,self.pt,self.back)
-        self.pt.move_to([self.get_center()[0],-1.5,0])
+        self.pt.shift(DOWN*(self.sq.height/2+self.pt.height/2))
         self.content.move_to(self.get_center())
         self.back.move_to(self.pt.get_edge_center(LEFT))
         self.arrow = None
@@ -25,10 +25,10 @@ class SingleLinked(VGroup):
         p = Circle(radius=0)
         p.move_to(self.pt.get_edge_center(RIGHT))
         self.arrow.end = None
-        return (self.arrow.connect(p))
+        return ([self.arrow.connect(p)])
     def connect(self, node):
         self.next_node = node
-        return(self.arrow.connect(node.back))
+        return([self.arrow.connect(node.back)])
     def attach(self,node):
         self.next_node = node
         if(self.arrow == None):
@@ -45,7 +45,7 @@ class DoubleLinked(SingleLinked):
     def __init__(self,content):
         super().__init__(content)
         self.back_pt = Rectangle(width = self.pt.width,height = self.pt.height)
-        self.back_pt.shift(UP*1.5)
+        self.back_pt.shift(UP*(self.sq.height/2+self.back_pt.height/2))
         self.front = Circle(radius = 0)
         self.front.move_to(self.back_pt.get_edge_center(RIGHT))
         self.add(self.front,self.back_pt)
@@ -65,7 +65,8 @@ class DoubleLinked(SingleLinked):
     def connect(self,node):
         frontc = super().connect(node)
         backc = self.next_node.connect_previous(self)
-        return(frontc,backc)
+        frontc.append(backc)
+        return(frontc)
     def new_of_own_class(self,content):
         return DoubleLinked(content)
     def disconnect_back(self):
@@ -79,7 +80,8 @@ class DoubleLinked(SingleLinked):
         if self.next_node.previous == self:
             backd = self.next_node.disconnect_back()
         frontd = super().disconnect()
-        return (frontd,backd)
+        frontd.append(backd)
+        return (frontd)
     def attach(self,node):
         super().attach(node)
         self.next_node.attach_previous(self)

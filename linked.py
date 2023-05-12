@@ -33,17 +33,17 @@ class DLinkedList(Scene):
 
 class multiLink(MovingCameraScene):
     def construct(self):
-        sq = Arrow()
-        arrowname = Text("The Allmighty Finger of God")
-        arrowname.move_to((0,3.5,0))
-        self.add(arrowname)
-        sq.put_start_and_end_on((0,3,0),(0,1.5,0))
-        self.add(sq)
+        pc = PseudoCode("multiadd.txt")
+        self.add(pc)
+        pc.to_corner(UL)
+        cam = VGroup(self.camera.frame,pc)
+        cam.set_width(30)
+        cam.shift(UP*2)
         mob = LinkedNodes(SingleLinked("0"))
         self.play(Create(mob))
         center = mob.get_center()
-        cam = VGroup(self.camera.frame,sq,arrowname)
         arr = mob.start
+        self.play(pc.animate(run_time = 0.25).highlight(1))
         for x in range(4):
             y = x+1
             name = str(y)
@@ -51,14 +51,19 @@ class multiLink(MovingCameraScene):
             boxy.move_to(center)
             boxy.shift(UP*10+RIGHT*4*y)
             #self.play(mob.animate(run_time=y/4).shift(LEFT*3*y))
-            self.play(cam.animate(run_time=y/4).move_to((4*y,0,0)))
+            self.play(pc.animate(run_time = 0.25).highlight(2))
+            self.play(cam.animate(run_time=y/4).move_to((4*y,cam.get_y(),0)))
+            self.play(pc.animate(run_time = 0.25).highlight(3))
             self.play(boxy.animate.shift(DOWN*10))
             anim = mob.add_node(name)
             self.add(anim)
             self.remove(boxy)
+            self.remove(arr.arrow)
+            self.play(pc.animate(run_time = 0.25).highlight(4))
             self.play(Create(arr.arrow))
             #self.play(mob.animate(run_time = 0.25).shift(RIGHT*3*y))
-            self.play(cam.animate(run_time = 0.25).move_to((0,0,0)))
+            self.play(pc.animate(run_time = 0.25).highlight(1))
+            self.play(cam.animate(run_time = 0.25).move_to((0,cam.get_y(),0)))
             self.play(Wait(run_time=0.25))
             arr = anim
 
@@ -73,12 +78,21 @@ class multiLink(MovingCameraScene):
         boxy.move_to(center)
         boxy.shift(UP*10+RIGHT*4*y)
         #self.play(mob.animate(run_time=y/4).shift(LEFT*3*y))
-        self.play(cam.animate(run_time=y/10).move_to((4*y,0,0)))
+        t = Text("Linear runtime moment.")
+        t.shift(UP*3)
+        self.add(t)
+        cam.add(t)
+        self.play(pc.animate(run_time = 0.25).highlight(2))
+        self.play(cam.animate(run_time=y/10).move_to((4*y,cam.get_y(),0)))
+        self.remove(t)
+        self.play(pc.animate(run_time = 0.25).highlight(3))
         self.play(boxy.animate.shift(DOWN*10))
         last = mob.last
         anim = mob.add_node(name)
         self.add(anim)
         self.remove(boxy)
+        self.remove(last.arrow)
+        self.play(pc.animate(run_time = 0.25).highlight(4))
         self.play(Create(last.arrow))
 
 
