@@ -1,6 +1,4 @@
 import os
-import html
-import sys
 
 from manim import *
 from pathlib import Path
@@ -11,6 +9,14 @@ from pygments.styles import get_all_styles
 from collections import defaultdict
 
 class PseudoCode(VGroup):
+    """
+    A Manim class for PseudoCode highlighting.
+
+    Parameters:
+    code_file: File of pseudocode
+    code: Optional string of pseudocode, if code_file is not given
+    """
+
     def __init__(self, 
                  code_file: str | os.PathLike | None = None, 
                  code: str | None = None,
@@ -55,20 +61,14 @@ class PseudoCode(VGroup):
         self.gen_code_text()
 
         for idx, line in enumerate(self.code_string.split("\n")):
-            #self.code_lines[idx+1] = line
             self.add_line(f'{idx+1}' + " " f'{line}')
-        
-        #for i in range(len(self.code_lines)):
-            #self.code_lines[i+1] = f'{i+1}' + " " f'{self.code_lines[i+1]}'
-            #self.add_line(f'{i+1}' + " " f'{self.code_lines[i+1]}')
         
     def getColoredWords(self):
         textItems = []
         for word, clr in list(self.wordColors.items()):
             #textItems.append(Tex(word).set_color(clr))
-            textItems.append(Text(word, color=clr))
-            print(word, clr)
-        return textItems
+            textItems.append(word.set_color(clr))
+        return Paragraph(*textItems)
 
     def isValidPath(self):
         if self.code_file is None:
@@ -165,8 +165,6 @@ class PseudoCode(VGroup):
         for i in range(len(lines)):
             line = ""
             lineIdx = 0
-            if lines[i].find("</pre>"):
-                break
             while lineIdx < len(lines[i]):
                 # Read color value and content of span tag
                 colr_start = lines[i].find("color: ")
@@ -176,9 +174,9 @@ class PseudoCode(VGroup):
                 lines[i] = lines[i][end + 1 : ]
                 end_span = lines[i].find("</span>")
                 line = line + lines[i][ : end_span]
-                self.wordColors[line] = colr_value
+                if colr_value != "</div>": self.wordColors[line] = colr_value
                 lineIdx = end_span+7
-
+                
                 # read everything after span tag until next span tag or end of line
                 while lineIdx < len(lines[i]):
                     if lines[i][lineIdx] == '<':
