@@ -1,6 +1,9 @@
 # LinkedList Visualising with Manim
 Bachelor Project with the goal of producing a number of animations, which describes the implementations and operations of the LinkedList data structure
 
+# Make sure manim is installed
+Please refer to https://docs.manim.community/en/stable/installation.html to see how manim is installed
+
 # Cmd for producing animation in Manim
 manim -pql 'filename'.py 'classname'<br />
 filename is the name of the python file containing the manim animation class<br />
