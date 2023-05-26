@@ -1,5 +1,5 @@
 # LinkedList Visualising with Manim
-Bachelor Project with the goal of producing a number of animations, which describes the implementations and operations of the LinkedList data structure
+Bachelor Project with the goal of producing the splice animation on the doubly linked list with supporting pseudocode being highlighted
 
 # Make sure manim is installed
 Please refer to https://docs.manim.community/en/stable/installation.html to see how manim is installed
